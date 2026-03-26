@@ -55,9 +55,13 @@
         </div>
         <iframe id="tour-frame"></iframe>
     </div>
-
+    
 <script>
-    const API_KEY = '150948|6aUlYYfPWd0yE2FFsY6thwKxjEuCrIK7spbzqkV5';
+    // 1. Put your base Make Webhook URL here (Without the ?search= part)
+    const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    
+    // 2. Simply change this one variable for each new agent's page you create!
+    const AGENT_LAST_NAME = 'Harari'; 
     
     const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
 
@@ -65,20 +69,19 @@
         const grid = document.getElementById('listings-grid');
         
         try {
-            // Searching explicitly for "Harari"
-            const response = await fetch('https://api.aryeo.com/v1/listings?per_page=100&filter[search]=Harari', {
-                headers: { 'Authorization': `Bearer ${API_KEY}`, 'Accept': 'application/json' }
-            });
+            // 3. The code now dynamically attaches the agent's name to the webhook!
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_LAST_NAME}`;
+            const response = await fetch(fetchUrl);
 
             if (!response.ok) {
-                grid.innerHTML = `<div class="loading-text" style="color:red;">API Error ${response.status}.</div>`;
+                grid.innerHTML = `<div class="loading-text" style="color:red;">Error reaching proxy server.</div>`;
                 return;
             }
 
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loading-text">No properties found matching the search term "Harari".</div>`;
+                grid.innerHTML = `<div class="loading-text">No properties found for ${AGENT_LAST_NAME}.</div>`;
                 return;
             }
 
@@ -91,26 +94,20 @@
                 const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
                 const img = item.thumbnail_url || item.main_image_url || FALLBACK_IMAGE;
 
-                // --- STATUS FORMATTING & COLOR LOGIC ---
                 let rawStatus = item.status || 'ACTIVE';
-                
-                // 1. Remove underscores and make it uppercase
                 let cleanStatus = rawStatus.replace(/_/g, ' ').toUpperCase(); 
 
-                // 2. Set default colors (Gold/Tan for things like 'DRAFT' or 'ACTIVE')
                 let statusColor = "var(--accent)";
                 let statusBg = "#fcf8f2"; 
 
-                // 3. Apply custom colors based on the status
                 if (cleanStatus === "FOR SALE" || cleanStatus === "FOR LEASE") {
-                    statusColor = "#155724"; // Dark Green text
-                    statusBg = "#d4edda";    // Light Green background
+                    statusColor = "#155724";
+                    statusBg = "#d4edda";
                 } else if (cleanStatus === "SOLD" || cleanStatus === "LEASED") {
-                    statusColor = "#721c24"; // Dark Red text
-                    statusBg = "#f8d7da";    // Light Red background
+                    statusColor = "#721c24";
+                    statusBg = "#f8d7da";
                 }
 
-                // Notice the inline styles added to the span below
                 card.innerHTML = `
                     <img src="${img}" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
                     <div class="card-body">
