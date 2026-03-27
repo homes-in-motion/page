@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Portfolio</title>
+    <style>
+        :root { --brand: #1a1a1a; --accent: #c5a059; --bg: #fdfdfd; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        
+        .agent-header { background: white; padding: 50px 20px; text-align: center; border-bottom: 1px solid #eee; margin-bottom: 40px; }
+        .initials { width: 75px; height: 75px; background: var(--brand); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: bold; font-size: 1.6rem; border: 2px solid var(--accent); }
+        .agent-header h1 { margin: 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 1px; }
+        .agent-header p { color: #888; margin: 10px 0 0; }
 
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+        #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 220px; object-fit: cover; background: #e4e6eb; }
+        .card-body { padding: 20px; flex-grow: 1; }
+        .card-body h3 { margin: 0; font-size: 1.1rem; color: var(--brand); line-height: 1.4; }
+        .status-tag { display: inline-block; font-size: 0.75rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; padding: 4px 8px; background: #fcf8f2; border-radius: 4px; }
+
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; }
+        .modal-nav { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
+        iframe { flex-grow: 1; border: none; width: 100%; height: 100%; }
+        .close-btn { font-size: 1.1rem; font-weight: bold; background: #f5f5f5; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+        .close-btn:hover { background: #e0e0e0; }
+        
+        .loading-text { text-align: center; color: #666; font-size: 1.2rem; grid-column: 1 / -1; padding: 40px; }
+    </style>
+</head>
+<body>
+
+    <div class="agent-header">
+        <div class="initials" id="ui-initials"></div> 
+        <h1 id="ui-name"></h1> 
+        <p>Featured Property Portfolio</p>
+    </div>
+
+    <div class="container">
+        <div id="listings-grid"><div class="loading-text">Loading properties...</div></div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-nav">
+            <span id="modal-title" style="font-weight:bold; letter-spacing:1px;">PROPERTY TOUR</span>
+            <button class="close-btn" onclick="closeModal()">CLOSE ✕</button>
+        </div>
+        <iframe id="tour-frame"></iframe>
+    </div>
+
+<script>
+    const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    
+    // --- TEMPLATE SETTINGS: ONLY CHANGE THESE TWO LINES ---
+    const AGENT_FIRST_NAME = ''; 
+    const AGENT_LAST_NAME = 'Zega';
+    // ------------------------------------------------------
+
+    const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
+
+    // 1. Automatically update the visual webpage text
+    document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Portfolio`;
+    document.getElementById('ui-name').innerText = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+    document.getElementById('ui-initials').innerText = AGENT_FIRST_NAME.charAt(0) + AGENT_LAST_NAME.charAt(0);
+
+    async function loadPortal() {
+        const grid = document.getElementById('listings-grid');
+        
+        try {
+            // 2. We use BOTH names to ensure a highly accurate search through the proxy
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+            const response = await fetch(fetchUrl);
+
+            if (!response.ok) {
+                grid.innerHTML = `<div class="loading-text" style="color:red;">Error reaching proxy server.</div>`;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!result.data || result.data.length === 0) {
+                grid.innerHTML = `<div class="loading-text">No properties found for ${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}.</div>`;
+                return;
+            }
+
+            grid.innerHTML = ''; 
+            
+            result.data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
+                const img = item.thumbnail_url || item.main_image_url || FALLBACK_IMAGE;
+
+                let rawStatus = item.status || 'ACTIVE';
+                let cleanStatus = rawStatus.replace(/_/g, ' ').toUpperCase(); 
+
+                let statusColor = "var(--accent)";
+                let statusBg = "#fcf8f2"; 
+
+                if (cleanStatus === "FOR SALE" || cleanStatus === "FOR LEASE") {
+                    statusColor = "#155724";
+                    statusBg = "#d4edda";
+                } else if (cleanStatus === "SOLD" || cleanStatus === "LEASED") {
+                    statusColor = "#721c24";
+                    statusBg = "#f8d7da";
+                }
+
+                card.innerHTML = `
+                    <img src="${img}" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
+                    <div class="card-body">
+                        <span class="status-tag" style="color: ${statusColor}; background-color: ${statusBg};">${cleanStatus}</span>
+                        <h3>${addr}</h3>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    const customUrl = `https://listings.homesinmotion.ca/v2/${item.id}`;
+                    document.getElementById('modal-title').innerText = addr.toUpperCase();
+                    document.getElementById('tour-frame').src = customUrl;
+                    document.getElementById('modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; 
+                };
+                
+                grid.appendChild(card);
+            });
+
+        } catch (err) {
+            grid.innerHTML = `<div class="loading-text" style="color:red;">Connection Error: ${err.message}</div>`;
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('tour-frame').src = '';
+        document.body.style.overflow = 'auto'; 
+    }
+
+    loadPortal();
+</script>
+
+</body>
+</html>
