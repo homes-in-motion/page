@@ -59,14 +59,14 @@
 <script>
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     
-    // --- CHANGE THESE TWO FOR EACH AGENT ---
+    // --- UPDATE THESE FOR EACH AGENT ---
     const AGENT_FIRST_NAME = 'Claudine'; 
     const AGENT_LAST_NAME = 'Montano';
-    // ---------------------------------------
+    // -----------------------------------
 
     const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
 
-    // Update the UI automatically
+    // 1. Automatically update the Page UI
     document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Portfolio`;
     document.getElementById('ui-name').innerText = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
     document.getElementById('ui-initials').innerText = AGENT_FIRST_NAME.charAt(0) + AGENT_LAST_NAME.charAt(0);
@@ -75,8 +75,10 @@
         const grid = document.getElementById('listings-grid');
         
         try {
-            // NOTE: We only send the LAST name to Make to keep the URL clean and safe
-            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_LAST_NAME}`;
+            // 2. We combine both names and ENCODE them to handle the space safely
+            const fullName = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(fullName)}`;
+            
             const response = await fetch(fetchUrl);
 
             if (!response.ok) {
@@ -87,7 +89,7 @@
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loading-text">No properties found for ${AGENT_LAST_NAME}.</div>`;
+                grid.innerHTML = `<div class="loading-text">No properties found for ${fullName}.</div>`;
                 return;
             }
 
