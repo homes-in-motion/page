@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Portfolio</title>
+    <title>Michael Harari | Property Portfolio</title>
     <style>
         :root { --brand: #1a1a1a; --accent: #c5a059; --bg: #fdfdfd; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
         
+        /* Header */
         .agent-header { background: white; padding: 50px 20px; text-align: center; border-bottom: 1px solid #eee; margin-bottom: 40px; }
         .initials { width: 75px; height: 75px; background: var(--brand); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: bold; font-size: 1.6rem; border: 2px solid var(--accent); }
         .agent-header h1 { margin: 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 1px; }
         .agent-header p { color: #888; margin: 10px 0 0; }
 
+        /* Grid Layout */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
         #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
         
+        /* Listing Cards */
         .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 220px; object-fit: cover; background: #e4e6eb; }
@@ -23,6 +26,7 @@
         .card-body h3 { margin: 0; font-size: 1.1rem; color: var(--brand); line-height: 1.4; }
         .status-tag { display: inline-block; font-size: 0.75rem; font-weight: bold; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; padding: 4px 8px; background: #fcf8f2; border-radius: 4px; }
 
+        /* Full-Screen Modal */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; }
         .modal-nav { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
         iframe { flex-grow: 1; border: none; width: 100%; height: 100%; }
@@ -35,8 +39,8 @@
 <body>
 
     <div class="agent-header">
-        <div class="initials" id="ui-initials"></div> 
-        <h1 id="ui-name"></h1> 
+        <div class="initials">MH</div>
+        <h1>Claudine Montano</h1>
         <p>Featured Property Portfolio</p>
     </div>
 
@@ -53,26 +57,20 @@
     </div>
 
 <script>
+    // 1. Put your base Make Webhook URL here (Without the ?search= part)
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     
-    // --- TEMPLATE SETTINGS: ONLY CHANGE THESE TWO LINES ---
-    const AGENT_FIRST_NAME = 'Michael'; 
-    const AGENT_LAST_NAME = 'Montano';
-    // ------------------------------------------------------
-
+    // 2. Simply change this one variable for each new agent's page you create!
+    const AGENT_LAST_NAME = 'Montano'; 
+    
     const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
-
-    // 1. Automatically update the visual webpage text
-    document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Portfolio`;
-    document.getElementById('ui-name').innerText = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
-    document.getElementById('ui-initials').innerText = AGENT_FIRST_NAME.charAt(0) + AGENT_LAST_NAME.charAt(0);
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
         
         try {
-            // 2. We use BOTH names to ensure a highly accurate search through the proxy
-            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+            // 3. The code now dynamically attaches the agent's name to the webhook!
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_LAST_NAME}`;
             const response = await fetch(fetchUrl);
 
             if (!response.ok) {
@@ -83,7 +81,7 @@
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loading-text">No properties found for ${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}.</div>`;
+                grid.innerHTML = `<div class="loading-text">No properties found for ${AGENT_LAST_NAME}.</div>`;
                 return;
             }
 
@@ -142,6 +140,6 @@
 
     loadPortal();
 </script>
-
+    
 </body>
 </html>
