@@ -140,10 +140,10 @@
                 </div>
 
                 <div class="contact-info">
-                    <a href="mailto:claudine@pqrealestategroup.com">Email Claudine</a>
-                    <span style="color:#eee">|</span>
-                    <a href="tel:4169850088">416-985-0088</a>
-                </div>
+    <a href="mailto:claudine@pqrealestategroup.com">Email Claudine</a>
+    <span style="color:#eee">|</span>
+    <a href="tel:4169850088">416.985.0088</a>
+</div>
 
                 <div class="brokerage-block">
                     <img src="image_3.png" alt="Corcoran" class="corcoran-logo">
@@ -171,11 +171,16 @@
 
 <script>
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    
+    // Updated Search and UI Variables
+    const AGENT_FIRST_NAME = 'Claudine'; 
+    const AGENT_LAST_NAME = 'Montano';
     const AGENT_SEARCH_NAME = 'Claudine Montano';
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
         try {
+            // Updated fetch logic to handle the full name search accurately
             const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
             const response = await fetch(fetchUrl);
             const result = await response.json();
