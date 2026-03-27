@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Harari | Property Portfolio</title>
+    <title>Property Portfolio</title>
     <style>
         :root { --brand: #1a1a1a; --accent: #c5a059; --bg: #fdfdfd; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
@@ -39,8 +39,8 @@
 <body>
 
     <div class="agent-header">
-        <div class="initials">MH</div>
-        <h1>Claudine Montano</h1>
+        <div class="initials" id="ui-initials"></div>
+        <h1 id="ui-name"></h1>
         <p>Featured Property Portfolio</p>
     </div>
 
@@ -57,19 +57,25 @@
     </div>
 
 <script>
-    // 1. Put your base Make Webhook URL here (Without the ?search= part)
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     
-    // 2. Simply change this one variable for each new agent's page you create!
-    const AGENT_LAST_NAME = 'Montano'; 
-    
+    // --- CHANGE THESE TWO FOR EACH AGENT ---
+    const AGENT_FIRST_NAME = 'Claudine'; 
+    const AGENT_LAST_NAME = 'Montano';
+    // ---------------------------------------
+
     const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
+
+    // Update the UI automatically
+    document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Portfolio`;
+    document.getElementById('ui-name').innerText = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+    document.getElementById('ui-initials').innerText = AGENT_FIRST_NAME.charAt(0) + AGENT_LAST_NAME.charAt(0);
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
         
         try {
-            // 3. The code now dynamically attaches the agent's name to the webhook!
+            // NOTE: We only send the LAST name to Make to keep the URL clean and safe
             const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_LAST_NAME}`;
             const response = await fetch(fetchUrl);
 
