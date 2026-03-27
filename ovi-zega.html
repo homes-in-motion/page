@@ -56,7 +56,7 @@
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     
     // --- TEMPLATE SETTINGS: ONLY CHANGE THESE TWO LINES ---
-    const AGENT_FIRST_NAME = ''; 
+    const AGENT_FIRST_NAME = 'Ovi'; 
     const AGENT_LAST_NAME = 'Zega';
     // ------------------------------------------------------
 
@@ -72,7 +72,7 @@
         
         try {
             // 2. We use BOTH names to ensure a highly accurate search through the proxy
-            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${AGENT_LAST_NAME}`;
             const response = await fetch(fetchUrl);
 
             if (!response.ok) {
