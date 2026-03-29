@@ -141,9 +141,9 @@
                 </div>
 
                 <div class="contact-stack">
-                    <a href="mailto:siva.nagamany@homelife.ca" class="brand-button">Email Siva</a>
-                    <a href="tel:4165550199" class="brand-button">Call 416.555.0199</a>
-                </div>
+    <a href="mailto:siva2921@gmail.com" class="brand-button">Email Siva</a>
+    <a href="tel:6472890091" class="brand-button">647.289.0091</a>
+</div>
 
                 <div class="brokerage-block">
                     <img src="image_5.png" alt="HomeLife Higher Standards" class="homelife-logo">
@@ -171,87 +171,59 @@
     </div>
 
 <script>
+    // Make sure this matches your 'Webhook URL' from the Make.com Webhook module exactly
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/YOUR_MAKE_URL_HERE';
-    
-    // --- TEMPLATE SETTINGS: Name and Search Query ---
-    const AGENT_FIRST_NAME = 'Siva'; 
-    const AGENT_LAST_NAME = 'Nagamany';
-    // ------------------------------------------------------
-
-    const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
-
-    // Update the visual webpage title
-    document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Property Portfolio`;
+    const AGENT_SEARCH_NAME = 'Siva Nagamany';
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
-        
         try {
-            // Encode names to handle spaces safely
-            const fullName = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
-            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(fullName)}`;
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
             
-            const response = await fetch(fetchUrl);
+            // Added 'mode: cors' to help prevent "Failed to fetch" errors
+            const response = await fetch(fetchUrl, {
+                method: 'GET',
+                mode: 'cors'
+            });
 
             if (!response.ok) {
-                grid.innerHTML = `<div class="loading-text" style="color:red;">Error reaching proxy server.</div>`;
+                grid.innerHTML = `<div class="loading-text" style="color:red;">Server Error (${response.status}). Please check your Make.com Scenario.</div>`;
                 return;
             }
 
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loading-text">No properties found for ${fullName}.</div>`;
+                grid.innerHTML = `<div class="loading-text">No active properties found for ${AGENT_SEARCH_NAME}.</div>`;
                 return;
             }
 
             grid.innerHTML = ''; 
-            
             result.data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                
-                const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
-                const img = item.thumbnail_url || item.main_image_url || FALLBACK_IMAGE;
-
-                let rawStatus = item.status || 'ACTIVE';
-                let cleanStatus = rawStatus.replace(/_/g, ' ').toUpperCase(); 
-
-                // --- Status Tag Branding (Keep his blue for active, standard for others) ---
-                let statusColor = "var(--brand-primary)";
-                let statusBg = "rgba(27, 20, 100, 0.06)"; 
-
-                if (cleanStatus === "FOR SALE" || cleanStatus === "FOR LEASE") {
-                    // Standard Real Estate Green override
-                    statusColor = "#155724";
-                    statusBg = "#d4edda";
-                } else if (cleanStatus === "SOLD" || cleanStatus === "LEASED") {
-                    // Standard Real Estate Red override
-                    statusColor = "#721c24";
-                    statusBg = "#f8d7da";
-                }
+                const addr = item.address?.unparsed_address || item.display_address || "Exclusive Listing";
+                const img = item.thumbnail_url || item.main_image_url;
 
                 card.innerHTML = `
-                    <img src="${img}" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
+                    <img src="${img}" onerror="this.src='https://via.placeholder.com/600x400?text=Processing+Tour...'">
                     <div class="card-body">
-                        <span class="status-tag" style="color: ${statusColor}; background-color: ${statusBg};">${cleanStatus}</span>
+                        <span class="status-tag">${(item.status || 'Active').replace(/_/g, ' ')}</span>
                         <h3>${addr}</h3>
                     </div>
                 `;
 
                 card.onclick = () => {
-                    const customUrl = `https://listings.homesinmotion.ca/v2/${item.id}`;
                     document.getElementById('modal-title').innerText = addr.toUpperCase();
-                    document.getElementById('tour-frame').src = customUrl;
+                    document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
                     document.getElementById('modal').style.display = 'flex';
                     document.body.style.overflow = 'hidden'; 
                 };
-                
                 grid.appendChild(card);
             });
-
         } catch (err) {
-            grid.innerHTML = `<div class="loading-text" style="color:red;">Connection Error: ${err.message}</div>`;
+            console.error("Fetch Error:", err);
+            grid.innerHTML = `<div class="loading-text" style="color:red;">Connection Error: Please ensure your Make.com scenario is 'ON'.</div>`;
         }
     }
 
