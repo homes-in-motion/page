@@ -3,175 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Portfolio</title>
+    <title>Siva Nagamany | Portfolio</title>
     <style>
-        /* --- BRANDING VARIABLES --- */
         :root { 
-            --brand-primary: #1b1464; /* Siva's HomeLife Blue */
+            --brand-primary: #1b1464; 
             --brand-white: #fdfdfd;
             --text-dark: #1a1a1a;
             --text-muted: #666;
             --border: #eee;
         }
 
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--brand-white); margin: 0; padding: 0; color: var(--text-dark); }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--brand-white); margin: 0; padding: 0; color: var(--text-dark); overflow-x: hidden; }
         
-        /* --- TAILORED SIVA HEADER (Asymmetrical) --- */
+        /* --- MOBILE-FIRST RESPONSIVE HEADER --- */
         .premium-header { 
             background: white; 
-            padding: 60px 40px; 
+            padding: 40px 20px; 
             border-bottom: 1px solid var(--border); 
-            margin-bottom: 50px; 
+            margin-bottom: 30px; 
         }
         
         .header-content { 
-            max-width: 1200px; 
+            max-width: 1100px; 
             margin: 0 auto; 
             display: flex; 
+            flex-direction: row; /* Desktop default */
+            align-items: center; 
             gap: 40px;
-            align-items: center;
         }
 
-        /* Headshot Column (Left) */
         .photo-column { flex-shrink: 0; }
         .siva-headshot { 
-            width: 250px; 
-            height: 250px; 
+            width: 240px; 
+            height: 240px; 
             object-fit: cover; 
-            border-radius: 6px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
-            display: block;
+            border-radius: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
 
-        /* Branding Column (Right) */
-        .brand-stack { 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-        }
+        .brand-stack { flex: 1; }
+        .name-and-title h1 { margin: 0; font-size: 2.2rem; color: var(--brand-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .name-and-title p { color: var(--text-muted); margin: 5px 0 20px; font-size: 1rem; }
 
-        .name-and-title { margin-bottom: 20px; }
-        .name-and-title h1 { 
-            margin: 0; 
-            font-size: 2.6rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: var(--brand-primary); /* Primary Blue */
-            font-weight: 300; 
-        }
-        .name-and-title p { 
-            color: var(--text-muted); 
-            margin: 10px 0 0; 
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-        }
-
-        /* Lead Gen Buttons */
-        .contact-stack { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 25px;}
+        .contact-stack { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
         .brand-button { 
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
             background: white; 
             color: var(--brand-primary); 
             border: 1px solid var(--brand-primary); 
-            padding: 8px 18px; 
+            padding: 10px; 
             border-radius: 4px; 
             text-decoration: none; 
-            font-size: 0.9rem; 
-            text-transform: uppercase; 
+            font-size: 0.85rem; 
             font-weight: bold; 
-            letter-spacing: 0.5px;
-            transition: 0.2s;
-        }
-        .brand-button:hover { background: var(--brand-primary); color: white; }
-
-        /* Logos Block (Bottom-Right) */
-        .brokerage-block { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
-        .homelife-logo { height: 50px; width: auto; } /* Provided HomeLife Logo */
-        
-        .brokerage-text { display: flex; flex-direction: column; color: var(--text-muted); font-size: 0.9rem;}
-
-        /* --- LISTINGS GRID --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
-        #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        
-        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: 0.3s; border: 1px solid var(--border); display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
-        .card img { width: 100%; height: 220px; object-fit: cover; background: #e4e6eb; }
-        .card-body { padding: 20px; flex-grow: 1; }
-        .card-body h3 { margin: 0; font-size: 1.1rem; color: var(--text-dark); line-height: 1.4; font-weight: 400; }
-        
-        /* Updated Status Tag Color to use Primary Blue */
-        .status-tag { 
-            display: inline-block; 
-            font-size: 0.75rem; 
-            font-weight: bold; 
-            color: var(--brand-primary); /* Blue Text */
-            text-transform: uppercase; 
-            margin-bottom: 10px; 
-            padding: 4px 10px; 
-            background: rgba(27, 20, 100, 0.06); /* Ultra-light blue background */
-            border-radius: 4px; 
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        /* Full-Screen Modal */
+        .homelife-logo { height: 45px; width: auto; margin-bottom: 5px; }
+
+        /* --- MOBILE OVERRIDES --- */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; text-align: center; gap: 25px; }
+            .siva-headshot { width: 180px; height: 180px; }
+            .name-and-title h1 { font-size: 1.8rem; }
+            .contact-stack { justify-content: center; }
+            .brokerage-block { display: flex; flex-direction: column; align-items: center; }
+        }
+
+        /* --- GRID --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px 40px; }
+        #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid var(--border); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .status-tag { display: inline-block; font-size: 0.7rem; font-weight: bold; color: var(--brand-primary); text-transform: uppercase; padding: 4px 8px; background: rgba(27, 20, 100, 0.05); border-radius: 4px; margin-bottom: 8px; }
+
+        /* Modal */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; }
-        .modal-nav { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
-        iframe { flex-grow: 1; border: none; width: 100%; height: 100%; }
-        .close-btn { font-size: 1.1rem; font-weight: bold; background: #f5f5f5; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: 0.2s; color: var(--brand-primary); }
-        .close-btn:hover { background: #e0e0e0; }
-        
-        .loading-text { text-align: center; color: var(--text-muted); font-size: 1.2rem; grid-column: 1 / -1; padding: 40px; }
-
+        .modal-nav { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        iframe { flex-grow: 1; border: none; width: 100%; }
+        .close-btn { background: var(--brand-primary); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="premium-header">
         <div class="header-content">
-            
             <div class="photo-column">
-                <img src="image_6.png" alt="Siva Nagamany" class="siva-headshot">
+                <img src="nagamany.jpeg" alt="Siva Nagamany" class="siva-headshot">
             </div>
-            
             <div class="brand-stack">
                 <div class="name-and-title">
                     <h1>Siva Nagamany</h1>
-                    <p>Featured Property Portfolio</p>
+                    <p>Real Estate Sales Representative</p>
                 </div>
-
                 <div class="contact-stack">
-    <a href="mailto:siva2921@gmail.com" class="brand-button">Email Siva</a>
-    <a href="tel:6472890091" class="brand-button">647.289.0091</a>
-</div>
-
+                    <a href="mailto:siva2921@gmail.com" class="brand-button">Email Siva</a>
+                    <a href="tel:6472890091" class="brand-button">647.289.0091</a>
+                </div>
                 <div class="brokerage-block">
-                    <img src="image_5.png" alt="HomeLife Higher Standards" class="homelife-logo">
-                    
-                    <div class="brokerage-text">
-                        <span style="font-weight:bold;">Homelife Future Realty Inc., Brokerage</span>
-                        <span>Brokerage, Independently Owned and Operated</span>
+                    <img src="homelife.png" alt="HomeLife" class="homelife-logo">
+                    <div style="font-size: 0.8rem; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+                        HomeLife Realty Services Inc.
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <div class="container">
-        <div id="listings-grid"><div class="loading-text">Loading properties...</div></div>
+        <div id="listings-grid"></div>
     </div>
 
     <div id="modal">
         <div class="modal-nav">
-            <span id="modal-title" style="font-weight:bold; letter-spacing:1px; color: #1b1464;">PROPERTY TOUR</span>
+            <span id="modal-title" style="font-weight:bold; color: #1b1464; font-size: 0.9rem;">VIRTUAL TOUR</span>
             <button class="close-btn" onclick="closeModal()">CLOSE ✕</button>
         </div>
         <iframe id="tour-frame"></iframe>
     </div>
 
 <script>
-    // Make sure this matches your 'Webhook URL' from the Make.com Webhook module exactly
+    // MAKE SURE THIS IS YOUR ACTUAL WEBHOOK URL
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     const AGENT_SEARCH_NAME = 'Siva Nagamany';
 
@@ -179,22 +135,11 @@
         const grid = document.getElementById('listings-grid');
         try {
             const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
-            
-            // Added 'mode: cors' to help prevent "Failed to fetch" errors
-            const response = await fetch(fetchUrl, {
-                method: 'GET',
-                mode: 'cors'
-            });
-
-            if (!response.ok) {
-                grid.innerHTML = `<div class="loading-text" style="color:red;">Server Error (${response.status}). Please check your Make.com Scenario.</div>`;
-                return;
-            }
-
+            const response = await fetch(fetchUrl);
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loading-text">No active properties found for ${AGENT_SEARCH_NAME}.</div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">No properties found.</div>`;
                 return;
             }
 
@@ -202,17 +147,14 @@
             result.data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                const addr = item.address?.unparsed_address || item.display_address || "Exclusive Listing";
-                const img = item.thumbnail_url || item.main_image_url;
-
+                const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
                 card.innerHTML = `
-                    <img src="${img}" onerror="this.src='https://via.placeholder.com/600x400?text=Processing+Tour...'">
+                    <img src="${item.thumbnail_url || item.main_image_url}">
                     <div class="card-body">
                         <span class="status-tag">${(item.status || 'Active').replace(/_/g, ' ')}</span>
-                        <h3>${addr}</h3>
+                        <h3 style="margin:0; font-size:1rem; font-weight:400;">${addr}</h3>
                     </div>
                 `;
-
                 card.onclick = () => {
                     document.getElementById('modal-title').innerText = addr.toUpperCase();
                     document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
@@ -222,8 +164,7 @@
                 grid.appendChild(card);
             });
         } catch (err) {
-            console.error("Fetch Error:", err);
-            grid.innerHTML = `<div class="loading-text" style="color:red;">Connection Error: Please ensure your Make.com scenario is 'ON'.</div>`;
+            grid.innerHTML = `<div style="text-align:center; color:red; padding:40px;">Connection Error: Check Make.com Scenario Status</div>`;
         }
     }
 
@@ -235,6 +176,5 @@
 
     loadPortal();
 </script>
-
 </body>
 </html>
