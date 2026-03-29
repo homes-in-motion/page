@@ -1,1 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Portfolio</title>
+    <style>
+        /* --- BRANDING VARIABLES --- */
+        :root { 
+            --brand-primary: #1b1464; /* Siva's HomeLife Blue */
+            --brand-white: #fdfdfd;
+            --text-dark: #1a1a1a;
+            --text-muted: #666;
+            --border: #eee;
+        }
 
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--brand-white); margin: 0; padding: 0; color: var(--text-dark); }
+        
+        /* --- TAILORED SIVA HEADER (Asymmetrical) --- */
+        .premium-header { 
+            background: white; 
+            padding: 60px 40px; 
+            border-bottom: 1px solid var(--border); 
+            margin-bottom: 50px; 
+        }
+        
+        .header-content { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            gap: 40px;
+            align-items: center;
+        }
+
+        /* Headshot Column (Left) */
+        .photo-column { flex-shrink: 0; }
+        .siva-headshot { 
+            width: 250px; 
+            height: 250px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
+            display: block;
+        }
+
+        /* Branding Column (Right) */
+        .brand-stack { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+        }
+
+        .name-and-title { margin-bottom: 20px; }
+        .name-and-title h1 { 
+            margin: 0; 
+            font-size: 2.6rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--brand-primary); /* Primary Blue */
+            font-weight: 300; 
+        }
+        .name-and-title p { 
+            color: var(--text-muted); 
+            margin: 10px 0 0; 
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Lead Gen Buttons */
+        .contact-stack { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 25px;}
+        .brand-button { 
+            background: white; 
+            color: var(--brand-primary); 
+            border: 1px solid var(--brand-primary); 
+            padding: 8px 18px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+        .brand-button:hover { background: var(--brand-primary); color: white; }
+
+        /* Logos Block (Bottom-Right) */
+        .brokerage-block { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+        .homelife-logo { height: 50px; width: auto; } /* Provided HomeLife Logo */
+        
+        .brokerage-text { display: flex; flex-direction: column; color: var(--text-muted); font-size: 0.9rem;}
+
+        /* --- LISTINGS GRID --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+        #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: 0.3s; border: 1px solid var(--border); display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+        .card img { width: 100%; height: 220px; object-fit: cover; background: #e4e6eb; }
+        .card-body { padding: 20px; flex-grow: 1; }
+        .card-body h3 { margin: 0; font-size: 1.1rem; color: var(--text-dark); line-height: 1.4; font-weight: 400; }
+        
+        /* Updated Status Tag Color to use Primary Blue */
+        .status-tag { 
+            display: inline-block; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            color: var(--brand-primary); /* Blue Text */
+            text-transform: uppercase; 
+            margin-bottom: 10px; 
+            padding: 4px 10px; 
+            background: rgba(27, 20, 100, 0.06); /* Ultra-light blue background */
+            border-radius: 4px; 
+            letter-spacing: 0.5px;
+        }
+
+        /* Full-Screen Modal */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; }
+        .modal-nav { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
+        iframe { flex-grow: 1; border: none; width: 100%; height: 100%; }
+        .close-btn { font-size: 1.1rem; font-weight: bold; background: #f5f5f5; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: 0.2s; color: var(--brand-primary); }
+        .close-btn:hover { background: #e0e0e0; }
+        
+        .loading-text { text-align: center; color: var(--text-muted); font-size: 1.2rem; grid-column: 1 / -1; padding: 40px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="premium-header">
+        <div class="header-content">
+            
+            <div class="photo-column">
+                <img src="image_6.png" alt="Siva Nagamany" class="siva-headshot">
+            </div>
+            
+            <div class="brand-stack">
+                <div class="name-and-title">
+                    <h1>Siva Nagamany</h1>
+                    <p>Featured Property Portfolio</p>
+                </div>
+
+                <div class="contact-stack">
+                    <a href="mailto:siva.nagamany@homelife.ca" class="brand-button">Email Siva</a>
+                    <a href="tel:4165550199" class="brand-button">Call 416.555.0199</a>
+                </div>
+
+                <div class="brokerage-block">
+                    <img src="image_5.png" alt="HomeLife Higher Standards" class="homelife-logo">
+                    
+                    <div class="brokerage-text">
+                        <span style="font-weight:bold;">HomeLife Realty Services Inc.</span>
+                        <span>Brokerage, Independently Owned and Operated</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="listings-grid"><div class="loading-text">Loading properties...</div></div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-nav">
+            <span id="modal-title" style="font-weight:bold; letter-spacing:1px; color: #1b1464;">PROPERTY TOUR</span>
+            <button class="close-btn" onclick="closeModal()">CLOSE ✕</button>
+        </div>
+        <iframe id="tour-frame"></iframe>
+    </div>
+
+<script>
+    const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/YOUR_MAKE_URL_HERE';
+    
+    // --- TEMPLATE SETTINGS: Name and Search Query ---
+    const AGENT_FIRST_NAME = 'Siva'; 
+    const AGENT_LAST_NAME = 'Nagamany';
+    // ------------------------------------------------------
+
+    const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23e4e6eb'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23888' text-anchor='middle' dominant-baseline='middle'%3EProcessing Tour...%3C/text%3E%3C/svg%3E";
+
+    // Update the visual webpage title
+    document.title = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME} | Property Portfolio`;
+
+    async function loadPortal() {
+        const grid = document.getElementById('listings-grid');
+        
+        try {
+            // Encode names to handle spaces safely
+            const fullName = `${AGENT_FIRST_NAME} ${AGENT_LAST_NAME}`;
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(fullName)}`;
+            
+            const response = await fetch(fetchUrl);
+
+            if (!response.ok) {
+                grid.innerHTML = `<div class="loading-text" style="color:red;">Error reaching proxy server.</div>`;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!result.data || result.data.length === 0) {
+                grid.innerHTML = `<div class="loading-text">No properties found for ${fullName}.</div>`;
+                return;
+            }
+
+            grid.innerHTML = ''; 
+            
+            result.data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
+                const img = item.thumbnail_url || item.main_image_url || FALLBACK_IMAGE;
+
+                let rawStatus = item.status || 'ACTIVE';
+                let cleanStatus = rawStatus.replace(/_/g, ' ').toUpperCase(); 
+
+                // --- Status Tag Branding (Keep his blue for active, standard for others) ---
+                let statusColor = "var(--brand-primary)";
+                let statusBg = "rgba(27, 20, 100, 0.06)"; 
+
+                if (cleanStatus === "FOR SALE" || cleanStatus === "FOR LEASE") {
+                    // Standard Real Estate Green override
+                    statusColor = "#155724";
+                    statusBg = "#d4edda";
+                } else if (cleanStatus === "SOLD" || cleanStatus === "LEASED") {
+                    // Standard Real Estate Red override
+                    statusColor = "#721c24";
+                    statusBg = "#f8d7da";
+                }
+
+                card.innerHTML = `
+                    <img src="${img}" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
+                    <div class="card-body">
+                        <span class="status-tag" style="color: ${statusColor}; background-color: ${statusBg};">${cleanStatus}</span>
+                        <h3>${addr}</h3>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    const customUrl = `https://listings.homesinmotion.ca/v2/${item.id}`;
+                    document.getElementById('modal-title').innerText = addr.toUpperCase();
+                    document.getElementById('tour-frame').src = customUrl;
+                    document.getElementById('modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; 
+                };
+                
+                grid.appendChild(card);
+            });
+
+        } catch (err) {
+            grid.innerHTML = `<div class="loading-text" style="color:red;">Connection Error: ${err.message}</div>`;
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('tour-frame').src = '';
+        document.body.style.overflow = 'auto'; 
+    }
+
+    loadPortal();
+</script>
+
+</body>
+</html>
