@@ -1,1 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Toppin | Property Portfolio</title>
+    <style>
+        /* --- BRANDING VARIABLES --- */
+        :root { 
+            --brand-gold: #c59830; 
+            --brand-black: #000000;
+            --brand-white: #ffffff;
+            --text-muted: #888;
+            --border: #222;
+        }
 
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--brand-black); margin: 0; padding: 0; color: var(--brand-white); }
+        
+        /* --- TAILORED TOPPIN HEADER --- */
+        .premium-header { 
+            background: #0a0a0a; 
+            padding: 40px 20px; 
+            border-bottom: 2px solid var(--brand-gold); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Logo Branding */
+        .logo-box { margin-bottom: 25px; }
+        .toppin-logo { 
+            height: 80px; 
+            width: auto; 
+            object-fit: contain;
+        }
+
+        .name-stack h1 { 
+            margin: 0; 
+            font-size: 2.2rem; 
+            text-transform: uppercase; 
+            letter-spacing: 4px; 
+            color: var(--brand-white);
+            font-weight: 300; 
+        }
+        
+        .name-stack p { 
+            color: var(--brand-gold); 
+            margin: 10px 0 0; 
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Contact Bar */
+        .contact-bar { 
+            display: flex; 
+            gap: 30px; 
+            margin-top: 25px; 
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+        .contact-bar a { 
+            color: var(--brand-white); 
+            text-decoration: none; 
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+        .contact-bar a:hover { color: var(--brand-gold); }
+
+        /* --- LISTINGS GRID --- */
+        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+        #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        .card { background: #111; border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.4s; border: 1px solid var(--border); }
+        .card:hover { transform: translateY(-10px); border-color: var(--brand-gold); box-shadow: 0 10px 30px rgba(197, 152, 48, 0.15); }
+        .card img { width: 100%; height: 240px; object-fit: cover; filter: grayscale(20%); transition: 0.4s; }
+        .card:hover img { filter: grayscale(0%); }
+        .card-body { padding: 25px; }
+        .card-body h3 { margin: 0; font-size: 1.1rem; color: var(--brand-white); font-weight: 300; line-height: 1.4; }
+        
+        .status-tag { 
+            display: inline-block; 
+            font-size: 0.7rem; 
+            font-weight: bold; 
+            color: var(--brand-gold); 
+            text-transform: uppercase; 
+            margin-bottom: 12px; 
+            padding: 4px 10px; 
+            border: 1px solid var(--brand-gold);
+            border-radius: 2px; 
+        }
+
+        /* --- MODAL --- */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--brand-black); z-index: 2000; flex-direction: column; }
+        .modal-nav { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: #0a0a0a; }
+        iframe { flex-grow: 1; border: none; width: 100%; height: 100%; }
+        .close-btn { font-size: 0.8rem; font-weight: bold; background: var(--brand-gold); color: black; border: none; padding: 10px 20px; cursor: pointer; border-radius: 2px; text-transform: uppercase; }
+
+        /* --- MOBILE FIX --- */
+        @media (max-width: 768px) {
+            .contact-bar { flex-direction: column; gap: 10px; }
+            .name-stack h1 { font-size: 1.8rem; }
+            .toppin-logo { height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="premium-header">
+        <div class="header-content">
+            <div class="logo-box">
+                <img src="toppin.png" alt="Toppin Logo" class="toppin-logo">
+            </div>
+            
+            <div class="name-stack">
+                <h1>Kenneth Toppin</h1>
+                <p>Real Estate Portfolio</p>
+            </div>
+
+            <div class="contact-bar">
+                <a href="mailto:kennethtoppin@gmail.com">kennethtoppin@gmail.com</a>
+                <a href="tel:4168946034">416.894.6034</a>
+                <a href="https://KennethToppin.com" target="_blank">KennethToppin.com</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="listings-grid">
+            <div style="text-align: center; width: 100%; grid-column: 1/-1; color: var(--brand-gold);">Loading Virtual Tours...</div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-nav">
+            <span id="modal-title" style="font-weight:bold; letter-spacing:2px; color: var(--brand-gold);">VIRTUAL TOUR</span>
+            <button class="close-btn" onclick="closeModal()">CLOSE ✕</button>
+        </div>
+        <iframe id="tour-frame"></iframe>
+    </div>
+
+<script>
+    const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    const AGENT_NAME = 'Kenneth Toppin';
+
+    async function loadPortal() {
+        const grid = document.getElementById('listings-grid');
+        try {
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_NAME)}`;
+            const response = await fetch(fetchUrl);
+            const result = await response.json();
+
+            if (!result.data || result.data.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">No properties found for ${AGENT_NAME}.</div>`;
+                return;
+            }
+
+            grid.innerHTML = ''; 
+            result.data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
+                
+                card.innerHTML = `
+                    <img src="${item.thumbnail_url || item.main_image_url}">
+                    <div class="card-body">
+                        <span class="status-tag">${(item.status || 'Active').replace(/_/g, ' ')}</span>
+                        <h3>${addr}</h3>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    document.getElementById('modal-title').innerText = addr.toUpperCase();
+                    document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
+                    document.getElementById('modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; 
+                };
+                grid.appendChild(card);
+            });
+        } catch (err) {
+            grid.innerHTML = `<div style="text-align:center; color:red; padding:40px;">Connection Error: Check Make.com Scenario</div>`;
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('tour-frame').src = '';
+        document.body.style.overflow = 'auto'; 
+    }
+
+    loadPortal();
+</script>
+</body>
+</html>
