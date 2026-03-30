@@ -117,6 +117,32 @@
             .search-controls { gap: 10px; }
             .search-wrapper, .filter-wrapper { min-width: 100%; }
         }
+        /* --- BOOKING BUTTON STYLING --- */
+    .booking-btn {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        background-color: var(--brand-purple);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: bold;
+        border-radius: 4px;
+        text-transform: uppercase;
+        transition: opacity 0.2s;
+    }
+    .booking-btn:hover {
+        opacity: 0.9;
+    }
+    
+    /* Ensure the card has a bit more vertical room for the button */
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
     </style>
 </head>
 <body>
@@ -205,11 +231,20 @@
             const addr = item.address?.unparsed_address || item.display_address || "Listing";
             const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
 
+            // Logic to determine if we show the "Book a Showing" button
+            const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
+            
+            // Link for the booking button (Email, Calendly, or Form)
+            const bookingLink = `mailto:claudine@pqrealestategroup.com?subject=Showing Request: ${encodeURIComponent(addr)}`;
+
             card.innerHTML = `
                 <img src="${item.thumbnail_url || item.main_image_url}">
                 <div class="card-body">
-                    <span class="status-tag">${rawStatus}</span>
-                    <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
+                    <div>
+                        <span class="status-tag">${rawStatus}</span>
+                        <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
+                    </div>
+                    ${isAvailable ? `<a href="${bookingLink}" class="booking-btn" onclick="event.stopPropagation();">Book a Showing</a>` : ''}
                 </div>
             `;
 
@@ -222,7 +257,6 @@
             grid.appendChild(card);
         });
     }
-
     // COMBINED FILTER LOGIC
     function filterProperties() {
         const textSearch = document.getElementById('property-search').value.toLowerCase();
