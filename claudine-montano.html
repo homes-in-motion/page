@@ -63,6 +63,25 @@
             .header-content { flex-direction: column-reverse; text-align: center; }
             .search-wrapper { max-width: 100%; }
         }
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .search-wrapper { flex: 3; }
+        .filter-wrapper { flex: 1; }
+
+        #property-search, #status-filter {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+            background: white;
+            appearance: none; /* Removes default arrow for custom look */
+        }
     </style>
 </head>
 <body>
@@ -87,9 +106,20 @@
         </div>
     </div>
 
-    <div class="search-container">
-        <div class="search-wrapper">
-            <input type="text" id="property-search" placeholder="Search by address, city, or status (Sold, Active)..." onkeyup="filterProperties()">
+   <div class="search-container">
+        <div class="search-controls">
+            <div class="search-wrapper">
+                <input type="text" id="property-search" placeholder="Search by address or city..." onkeyup="filterProperties()">
+            </div>
+            <div class="filter-wrapper">
+                <select id="status-filter" onchange="filterProperties()">
+                    <option value="">All Statuses</option>
+                    <option value="FOR SALE">For Sale</option>
+                    <option value="SOLD">Sold</option>
+                    <option value="FOR LEASE">For Lease</option>
+                    <option value="LEASED">Leased</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -108,7 +138,7 @@
 <script>
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     const AGENT_SEARCH_NAME = 'Claudine Montano';
-    let allProperties = []; // Global storage for filtering
+    let allProperties = []; 
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
@@ -122,8 +152,8 @@
                 return;
             }
 
-            allProperties = result.data; // Save data
-            displayProperties(allProperties); // Initial draw
+            allProperties = result.data;
+            displayProperties(allProperties);
 
         } catch (err) {
             grid.innerHTML = `<div style="text-align:center; color:red; padding:60px;">Connection Error.</div>`;
@@ -138,12 +168,12 @@
             const card = document.createElement('div');
             card.className = 'card';
             const addr = item.address?.unparsed_address || item.display_address || "Listing";
-            const status = (item.status || 'Active').replace(/_/g, ' ');
+            const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
 
             card.innerHTML = `
                 <img src="${item.thumbnail_url || item.main_image_url}">
                 <div class="card-body">
-                    <span class="status-tag">${status}</span>
+                    <span class="status-tag">${rawStatus}</span>
                     <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
                 </div>
             `;
@@ -158,14 +188,23 @@
         });
     }
 
-    // SEARCH LOGIC
+    // COMBINED FILTER LOGIC
     function filterProperties() {
-        const searchTerm = document.getElementById('property-search').value.toLowerCase();
+        const textSearch = document.getElementById('property-search').value.toLowerCase();
+        const statusFilter = document.getElementById('status-filter').value; // e.g., "SOLD"
+
         const filtered = allProperties.filter(item => {
             const addr = (item.address?.unparsed_address || "").toLowerCase();
-            const status = (item.status || "").toLowerCase();
-            return addr.includes(searchTerm) || status.includes(searchTerm);
+            const city = (item.address?.city || "").toLowerCase();
+            const status = (item.status || "").replace(/_/g, ' ').toUpperCase();
+
+            // Match text AND match status (if a status is selected)
+            const matchesText = addr.includes(textSearch) || city.includes(textSearch);
+            const matchesStatus = statusFilter === "" || status === statusFilter;
+
+            return matchesText && matchesStatus;
         });
+
         displayProperties(filtered);
     }
 
