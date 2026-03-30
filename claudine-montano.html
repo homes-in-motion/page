@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Portfolio</title>
+    <title>Property Portfolio | Claudine Montano</title>
     <style>
         :root { 
             --brand-purple: #663399; 
@@ -15,118 +15,54 @@
 
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--brand-white); margin: 0; padding: 0; color: var(--text-dark); }
         
-        /* --- PREMIUM HEADER --- */
-        .premium-header { 
-            background: white; 
-            padding: 60px 20px; 
-            border-bottom: 1px solid var(--border); 
-            margin-bottom: 40px; 
-        }
-        
-        .header-content { 
+        /* --- HEADER --- */
+        .premium-header { background: white; padding: 60px 20px; border-bottom: 1px solid var(--border); }
+        .header-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 50px; }
+        .name-and-title h1 { margin: 0; font-size: 2.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brand-purple); font-weight: 300; }
+        .contact-info { margin-top: 20px; display: flex; gap: 20px; font-size: 1rem; font-weight: 500; }
+        .contact-info a { color: var(--brand-purple); text-decoration: none; border-bottom: 1px solid transparent; }
+        .corcoran-logo { height: 75px; width: auto; object-fit: contain; display: block; margin-top: 30px; }
+
+        .photo-column img { width: 300px; height: 300px; object-fit: cover; border-radius: 4px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+
+        /* --- SEARCH BAR SECTION --- */
+        .search-container { 
             max-width: 1100px; 
-            margin: 0 auto; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            gap: 50px;
+            margin: 40px auto 20px; 
+            padding: 0 20px;
         }
+        .search-wrapper { position: relative; max-width: 500px; }
+        #property-search { 
+            width: 100%; 
+            padding: 15px 20px; 
+            font-size: 1rem; 
+            border: 1px solid #ddd; 
+            border-radius: 30px; 
+            outline: none; 
+            transition: 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        #property-search:focus { border-color: var(--brand-purple); box-shadow: 0 4px 15px rgba(102, 51, 153, 0.1); }
 
-        .brand-stack { flex: 1; }
-
-        .name-and-title h1 { 
-            margin: 0; 
-            font-size: 2.6rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: var(--brand-purple);
-            font-weight: 300; 
-        }
-        .name-and-title p { 
-            color: var(--text-muted); 
-            margin: 8px 0 0; 
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* --- CONTACT STACK --- */
-        .contact-info { 
-            margin-top: 20px; 
-            display: flex; 
-            gap: 20px; 
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .contact-info a { 
-            color: var(--brand-purple); 
-            text-decoration: none; 
-            border-bottom: 1px solid transparent;
-            transition: 0.2s;
-        }
-        .contact-info a:hover { border-bottom-color: var(--brand-purple); }
-
-        /* --- BROKERAGE SECTION (Anti-Stretch Fix) --- */
-        .brokerage-block { 
-            margin-top: 35px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-        }
-        .corcoran-logo { 
-            height: 75px; 
-            width: auto; 
-            max-width: 320px;
-            object-fit: contain; /* Prevents horizontal stretching */
-            display: block; 
-            margin-left: -4px;
-        }
-        .brokerage-name { 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: #aaa; 
-            font-weight: bold;
-        }
-
-        .photo-column { flex-shrink: 0; }
-        .claudine-headshot { 
-            width: 300px; 
-            height: 300px; 
-            object-fit: cover; 
-            border-radius: 4px; 
-            box-shadow: 0 12px 40px rgba(0,0,0,0.08); 
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            .header-content { 
-                flex-direction: column-reverse; 
-                text-align: center;
-                gap: 40px;
-            }
-            .brand-stack { width: 100%; }
-            .contact-info { justify-content: center; }
-            .brokerage-block { align-items: center; }
-            .corcoran-logo { margin-left: 0; height: 65px; }
-            .claudine-headshot { width: 100%; max-width: 340px; height: auto; }
-        }
-
-        /* --- LISTINGS GRID --- */
+        /* --- GRID --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
         #listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        
         .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: 0.3s; border: 1px solid var(--border); }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-8px); }
         .card img { width: 100%; height: 240px; object-fit: cover; }
         .card-body { padding: 25px; }
         .status-tag { display: inline-block; font-size: 0.75rem; font-weight: bold; color: var(--brand-purple); text-transform: uppercase; margin-bottom: 12px; padding: 5px 12px; background: rgba(102, 51, 153, 0.05); border-radius: 4px; }
 
-        /* Modal */
+        /* Modal & Mobile Fixes */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; }
         .modal-nav { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         iframe { flex-grow: 1; border: none; width: 100%; }
-        .close-btn { background: #1a1a1a; border: none; padding: 12px 24px; cursor: pointer; border-radius: 4px; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.8rem; }
+        .close-btn { background: #1a1a1a; color: white; border: none; padding: 12px 24px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column-reverse; text-align: center; }
+            .search-wrapper { max-width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -138,22 +74,22 @@
                     <h1>Claudine Montano</h1>
                     <p>Broker | REALTOR&reg;</p>
                 </div>
-
                 <div class="contact-info">
-    <a href="mailto:claudine@pqrealestategroup.com">Email Claudine</a>
-    <span style="color:#eee">|</span>
-    <a href="tel:4169850088">416.985.0088</a>
-</div>
-
-                <div class="brokerage-block">
-                    <img src="image_3.png" alt="Corcoran" class="corcoran-logo">
-                    <span class="brokerage-name">Corcoran Horizon Realty</span>
+                    <a href="mailto:claudine@pqrealestategroup.com">Email Claudine</a>
+                    <span style="color:#eee">|</span>
+                    <a href="tel:4169850088">416.985.0088</a>
                 </div>
+                <img src="image_3.png" alt="Corcoran" class="corcoran-logo">
             </div>
-
             <div class="photo-column">
-                <img src="image_4.png" alt="Claudine Montano" class="claudine-headshot">
+                <img src="image_4.png" alt="Claudine Montano">
             </div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" id="property-search" placeholder="Search by address, city, or status (Sold, Active)..." onkeyup="filterProperties()">
         </div>
     </div>
 
@@ -163,59 +99,74 @@
 
     <div id="modal">
         <div class="modal-nav">
-            <span id="modal-title" style="font-weight:bold; color: #663399; letter-spacing: 1px;">VIRTUAL PROPERTY TOUR</span>
-            <button class="close-btn" onclick="closeModal()">Close Tour ✕</button>
+            <span id="modal-title" style="font-weight:bold; color: #663399;">VIRTUAL PROPERTY TOUR</span>
+            <button class="close-btn" onclick="closeModal()">Close ✕</button>
         </div>
         <iframe id="tour-frame"></iframe>
     </div>
 
 <script>
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
-    
-    // Updated Search and UI Variables
-    const AGENT_FIRST_NAME = 'Claudine'; 
-    const AGENT_LAST_NAME = 'Montano';
     const AGENT_SEARCH_NAME = 'Claudine Montano';
+    let allProperties = []; // Global storage for filtering
 
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
         try {
-            // Updated fetch logic to handle the full name search accurately
             const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
             const response = await fetch(fetchUrl);
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div style="text-align:center; padding:60px; color:#888;">No featured properties currently available.</div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:60px; color:#888;">No properties found.</div>`;
                 return;
             }
 
-            grid.innerHTML = ''; 
-            result.data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                const addr = item.address?.unparsed_address || item.display_address || "Exclusive Listing";
-                const img = item.thumbnail_url || item.main_image_url;
+            allProperties = result.data; // Save data
+            displayProperties(allProperties); // Initial draw
 
-                card.innerHTML = `
-                    <img src="${img}">
-                    <div class="card-body">
-                        <span class="status-tag">${(item.status || 'Active').replace(/_/g, ' ')}</span>
-                        <h3 style="margin:0; font-size:1.15rem; font-weight:400; line-height:1.5;">${addr}</h3>
-                    </div>
-                `;
-
-                card.onclick = () => {
-                    document.getElementById('modal-title').innerText = addr.toUpperCase();
-                    document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
-                    document.getElementById('modal').style.display = 'flex';
-                    document.body.style.overflow = 'hidden'; 
-                };
-                grid.appendChild(card);
-            });
         } catch (err) {
-            grid.innerHTML = `<div style="text-align:center; color:red; padding:60px;">Unable to connect to the portfolio server.</div>`;
+            grid.innerHTML = `<div style="text-align:center; color:red; padding:60px;">Connection Error.</div>`;
         }
+    }
+
+    function displayProperties(properties) {
+        const grid = document.getElementById('listings-grid');
+        grid.innerHTML = ''; 
+        
+        properties.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const addr = item.address?.unparsed_address || item.display_address || "Listing";
+            const status = (item.status || 'Active').replace(/_/g, ' ');
+
+            card.innerHTML = `
+                <img src="${item.thumbnail_url || item.main_image_url}">
+                <div class="card-body">
+                    <span class="status-tag">${status}</span>
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
+                </div>
+            `;
+
+            card.onclick = () => {
+                document.getElementById('modal-title').innerText = addr.toUpperCase();
+                document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
+                document.getElementById('modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden'; 
+            };
+            grid.appendChild(card);
+        });
+    }
+
+    // SEARCH LOGIC
+    function filterProperties() {
+        const searchTerm = document.getElementById('property-search').value.toLowerCase();
+        const filtered = allProperties.filter(item => {
+            const addr = (item.address?.unparsed_address || "").toLowerCase();
+            const status = (item.status || "").toLowerCase();
+            return addr.includes(searchTerm) || status.includes(searchTerm);
+        });
+        displayProperties(filtered);
     }
 
     function closeModal() {
