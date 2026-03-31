@@ -232,12 +232,14 @@
     </div>
 
 <script>
-    // --- YOUR SETTINGS ---
-    const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/cf22ejrqhnc58h7e4sapg6xav7wt94xb'; // <--- ADD THIS
+    // --- SETTINGS ---
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/cf22ejrqhnc58h7e4sapg6xav7wt94xb';
     const AGENT_SEARCH_NAME = 'Claudine Montano';
+    
     let allProperties = []; 
 
+    // Initial load
     async function loadPortal() {
         const grid = document.getElementById('listings-grid');
         try {
@@ -268,23 +270,20 @@
             const addr = item.address?.unparsed_address || item.display_address || "Listing";
             const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
             
-            // 1. First, define the logic for the button
+            // Logic for the booking button
             const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
-            
-            ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
 
-// 2. Then, inject it directly into the HTML string
-card.innerHTML = `
-    <img src="${item.thumbnail_url || item.main_image_url}">
-    <div class="card-body">
-        <div>
-            <span class="status-tag">${rawStatus}</span>
-            <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
-        </div>
-        
-        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
-    </div>
-`;
+            // Inject HTML into card
+            card.innerHTML = `
+                <img src="${item.thumbnail_url || item.main_image_url}">
+                <div class="card-body">
+                    <div>
+                        <span class="status-tag">${rawStatus}</span>
+                        <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
+                    </div>
+                    ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
+                </div>
+            `;
             
             card.onclick = () => {
                 document.getElementById('modal-title').innerText = addr.toUpperCase();
@@ -295,17 +294,62 @@ card.innerHTML = `
             grid.appendChild(card);
         });
     }
-    // COMBINED FILTER LOGIC
+
+    // --- FORM FUNCTIONS ---
+    function openBookingForm(address) {
+        document.getElementById('modal-property-name').innerText = address;
+        document.getElementById('form-property-addr').value = address;
+        document.getElementById('contact-modal').style.display = 'flex';
+    }
+
+    function toggleContactModal() {
+        document.getElementById('contact-modal').style.display = 'none';
+        document.getElementById('lead-form').reset();
+        document.getElementById('lead-form').style.display = 'block';
+        document.getElementById('form-success').style.display = 'none';
+    }
+
+    async function submitLead(event) {
+        event.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "Sending...";
+        btn.disabled = true;
+
+        const leadData = {
+            property: document.getElementById('form-property-addr').value,
+            name: document.getElementById('lead-name').value,
+            phone: document.getElementById('lead-phone').value,
+            email: document.getElementById('lead-email').value,
+            agent: AGENT_SEARCH_NAME
+        };
+
+        try {
+            await fetch(LEAD_WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify(leadData),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            document.getElementById('lead-form').style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+            setTimeout(toggleContactModal, 3000);
+        } catch (err) {
+            alert("Error sending request. Please try again.");
+            btn.innerText = "Send Request";
+            btn.disabled = false;
+        }
+    }
+
+    // --- FILTER LOGIC ---
     function filterProperties() {
         const textSearch = document.getElementById('property-search').value.toLowerCase();
-        const statusFilter = document.getElementById('status-filter').value; // e.g., "SOLD"
+        const statusFilter = document.getElementById('status-filter').value;
 
         const filtered = allProperties.filter(item => {
             const addr = (item.address?.unparsed_address || "").toLowerCase();
             const city = (item.address?.city || "").toLowerCase();
             const status = (item.status || "").replace(/_/g, ' ').toUpperCase();
 
-            // Match text AND match status (if a status is selected)
             const matchesText = addr.includes(textSearch) || city.includes(textSearch);
             const matchesStatus = statusFilter === "" || status === statusFilter;
 
@@ -322,28 +366,6 @@ card.innerHTML = `
     }
 
     loadPortal();
-
-    async function submitLead(event) {
-    event.preventDefault(); // Stops the page from refreshing
-    
-    const leadData = {
-        property: document.getElementById('form-property-addr').value,
-        name: document.getElementById('lead-name').value,
-        phone: document.getElementById('lead-phone').value,
-        email: document.getElementById('lead-email').value
-    };
-
-    // This sends the data to your Make.com Scenario
-    await fetch(LEAD_WEBHOOK_URL, {
-        method: 'POST',
-        body: JSON.stringify(leadData),
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    // Show success message
-    document.getElementById('lead-form').style.display = 'none';
-    document.getElementById('form-success').style.display = 'block';
-}
 </script>
 </body>
 </html>
