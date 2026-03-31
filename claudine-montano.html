@@ -143,8 +143,43 @@
         flex-direction: column;
         justify-content: space-between;
     }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+    .contact-card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+    .close-modal { position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 1.2rem; cursor: pointer; color: #999; }
+    .contact-card h2 { margin: 0 0 10px; color: var(--brand-purple); }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #666; text-transform: uppercase; font-weight: bold; }
+    .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; box-sizing: border-box; }
+    .input-group input:focus { border-color: var(--brand-purple); }
     </style>
 </head>
+    <div id="contact-modal" class="modal-overlay">
+    <div class="contact-card">
+        <button class="close-modal" onclick="toggleContactModal()">✕</button>
+        <h2>Book a Showing</h2>
+        <p id="modal-property-name" style="color: var(--brand-purple); font-weight: bold; margin-bottom: 20px;"></p>
+        
+        <form id="lead-form" onsubmit="submitLead(event)">
+            <input type="hidden" id="form-property-addr">
+            <div class="input-group">
+                <label>Your Name</label>
+                <input type="text" id="lead-name" required placeholder="John Doe">
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" id="lead-phone" required placeholder="416-555-0199">
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="lead-email" required placeholder="john@example.com">
+            </div>
+            <button type="submit" id="submit-btn" class="booking-btn">Send Request</button>
+        </form>
+        <div id="form-success" style="display:none; text-align:center; color: green; font-weight:bold; margin-top:20px;">
+            Request Sent! Claudine will contact you shortly.
+        </div>
+    </div>
+</div>
 <body>
 
     <div class="premium-header">
@@ -197,6 +232,8 @@
     </div>
 
 <script>
+    // --- YOUR SETTINGS ---
+    const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/yyy-your-new-lead-id-yyy'; // <--- ADD THIS
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     const AGENT_SEARCH_NAME = 'Claudine Montano';
     let allProperties = []; 
@@ -234,20 +271,22 @@
             // Logic to determine if we show the "Book a Showing" button
             const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
             
-            // Link for the booking button (Email, Calendly, or Form)
-            const bookingLink = `mailto:claudine@pqrealestategroup.com?subject=Showing Request: ${encodeURIComponent(addr)}`;
+            // 1. First, define the logic for the button
+const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
 
-            card.innerHTML = `
-                <img src="${item.thumbnail_url || item.main_image_url}">
-                <div class="card-body">
-                    <div>
-                        <span class="status-tag">${rawStatus}</span>
-                        <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
-                    </div>
-                    ${isAvailable ? `<a href="${bookingLink}" class="booking-btn" onclick="event.stopPropagation();">Book a Showing</a>` : ''}
-                </div>
-            `;
-
+// 2. Then, inject it directly into the HTML string
+card.innerHTML = `
+    <img src="${item.thumbnail_url || item.main_image_url}">
+    <div class="card-body">
+        <div>
+            <span class="status-tag">${rawStatus}</span>
+            <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
+        </div>
+        
+        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
+    </div>
+`;
+            
             card.onclick = () => {
                 document.getElementById('modal-title').innerText = addr.toUpperCase();
                 document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
@@ -284,6 +323,28 @@
     }
 
     loadPortal();
+
+    async function submitLead(event) {
+    event.preventDefault(); // Stops the page from refreshing
+    
+    const leadData = {
+        property: document.getElementById('form-property-addr').value,
+        name: document.getElementById('lead-name').value,
+        phone: document.getElementById('lead-phone').value,
+        email: document.getElementById('lead-email').value
+    };
+
+    // This sends the data to your Make.com Scenario
+    await fetch(LEAD_WEBHOOK_URL, {
+        method: 'POST',
+        body: JSON.stringify(leadData),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    // Show success message
+    document.getElementById('lead-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+}
 </script>
 </body>
 </html>
