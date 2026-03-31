@@ -267,12 +267,11 @@
             card.className = 'card';
             const addr = item.address?.unparsed_address || item.display_address || "Listing";
             const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
-
-            // Logic to determine if we show the "Book a Showing" button
-            const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
             
             // 1. First, define the logic for the button
-const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
+            const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
+            
+            ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
 
 // 2. Then, inject it directly into the HTML string
 card.innerHTML = `
