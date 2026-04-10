@@ -317,6 +317,7 @@
 
     // These IDs must match the 'id' attributes in your HTML form exactly
     const leadData = {
+        listing_id: item.id,
         property: document.getElementById('modal-property-name').innerText, // Pulls the text from the <p> tag
         name: document.getElementById('lead-name').value,
         phone: document.getElementById('lead-phone').value,
