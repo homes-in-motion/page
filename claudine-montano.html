@@ -319,12 +319,11 @@
 
     // These IDs must match the 'id' attributes in your HTML form exactly
     const leadData = {
-        listing_id: document.getElementById('form-listing-id').value,
-        property: document.getElementById('modal-property-name').innerText, // Pulls the text from the <p> tag
+        listing_id: document.getElementById('form-listing-id').value, // Now it works!
+        property: document.getElementById('form-property-addr').value,
         name: document.getElementById('lead-name').value,
         phone: document.getElementById('lead-phone').value,
-        email: document.getElementById('lead-email').value,
-        agent: "Claudine Montano"
+        email: document.getElementById('lead-email').value
     };
 
     try {
