@@ -161,6 +161,7 @@
         
         <form id="lead-form" onsubmit="submitLead(event)">
             <input type="hidden" id="form-property-addr">
+            <input type="hidden" id="form-listing-id">
             <div class="input-group">
                 <label>Your Name</label>
                 <input type="text" id="lead-name" required placeholder="John Doe">
@@ -281,7 +282,7 @@
                         <span class="status-tag">${rawStatus}</span>
                         <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
                     </div>
-                    ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}')">Book a Showing</button>` : ''}
+                    ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}', '${item.id}')">Book a Showing</button>` : ''}
                 </div>
             `;
             
@@ -299,6 +300,7 @@
     function openBookingForm(address) {
         document.getElementById('modal-property-name').innerText = address;
         document.getElementById('form-property-addr').value = address;
+        document.getElementById('form-listing-id').value = listingId;
         document.getElementById('contact-modal').style.display = 'flex';
     }
 
@@ -317,7 +319,7 @@
 
     // These IDs must match the 'id' attributes in your HTML form exactly
     const leadData = {
-        listing_id: item.id,
+        listing_id: document.getElementById('form-listing-id').value,
         property: document.getElementById('modal-property-name').innerText, // Pulls the text from the <p> tag
         name: document.getElementById('lead-name').value,
         phone: document.getElementById('lead-phone').value,
