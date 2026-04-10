@@ -297,12 +297,13 @@
     }
 
     // --- FORM FUNCTIONS ---
-    function openBookingForm(address) {
-        document.getElementById('modal-property-name').innerText = address;
-        document.getElementById('form-property-addr').value = address;
-        document.getElementById('form-listing-id').value = listingId;
-        document.getElementById('contact-modal').style.display = 'flex';
-    }
+    // CORRECTED VERSION
+function openBookingForm(address, listingId) { // Added listingId here
+    document.getElementById('modal-property-name').innerText = address;
+    document.getElementById('form-property-addr').value = address;
+    document.getElementById('form-listing-id').value = listingId; // Now it can find it!
+    document.getElementById('contact-modal').style.display = 'flex';
+}
 
     function toggleContactModal() {
         document.getElementById('contact-modal').style.display = 'none';
