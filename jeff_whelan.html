@@ -332,27 +332,33 @@
     </div>
 
     <script>
-        // --- 1. MOCK DATA (Replace with your Aryeo API Fetch) ---
-        const mockProperties = [
-            {
-                id: "101",
-                address: { unparsed_address: "1201 Dundas St E 503, Toronto" },
-                status: "FOR_SALE",
-                thumbnail_url: "https://via.placeholder.com/600x400?text=Dundas+St"
-            },
-            {
-                id: "102",
-                address: { unparsed_address: "88 Queens Quay W, Toronto" },
-                status: "SOLD",
-                thumbnail_url: "https://via.placeholder.com/600x400?text=Queens+Quay"
-            },
-            {
-                id: "103",
-                address: { unparsed_address: "30 Shore Breeze Dr, Etobicoke" },
-                status: "FOR_LEASE",
-                thumbnail_url: "https://via.placeholder.com/600x400?text=Shore+Breeze"
+       // --- SETTINGS ---
+    const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+    const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/m9hipp4519tifrfqj7xo76myrneu3kwz';
+    const AGENT_SEARCH_NAME = 'Jeff Whelan';
+    
+    let allProperties = []; 
+
+    // Initial load
+    async function loadPortal() {
+        const grid = document.getElementById('listings-grid');
+        try {
+            const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
+            const response = await fetch(fetchUrl);
+            const result = await response.json();
+
+            if (!result.data || result.data.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:60px; color:#888;">No properties found.</div>`;
+                return;
             }
-        ];
+
+            allProperties = result.data;
+            displayProperties(allProperties);
+
+        } catch (err) {
+            grid.innerHTML = `<div style="text-align:center; color:red; padding:60px;">Connection Error.</div>`;
+        }
+    }
 
         // --- 2. DISPLAY & SORT FUNCTION (The logic we perfected earlier) ---
         function displayProperties(properties) {
