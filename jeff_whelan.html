@@ -443,10 +443,8 @@
             };
 
             try {
-                // REPLACE WITH JEFF'S SPECIFIC MAKE.COM WEBHOOK URL
-                const webhookUrl = 'https://hook.us2.make.com/YOUR_WEBHOOK_ID_HERE';
-                
-                await fetch(webhookUrl, {
+                // Using the LEAD_WEBHOOK_URL you defined at the top of the script
+                await fetch(LEAD_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -466,10 +464,9 @@
             }
         }
 
-        // Initialize page with data
+        // Initialize page with data from your Webhook
         window.onload = () => {
-            // In production, replace mockProperties with your Aryeo fetch API call
-            displayProperties(mockProperties);
+            loadPortal();
         };
     </script>
 </body>
