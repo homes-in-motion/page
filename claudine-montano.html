@@ -262,40 +262,57 @@
     }
 
     function displayProperties(properties) {
-        const grid = document.getElementById('listings-grid');
-        grid.innerHTML = ''; 
+    const grid = document.getElementById('listings-grid');
+    grid.innerHTML = ''; 
+
+    // 1. Define the Priority Order
+    const priority = {
+        "FOR SALE": 1,
+        "ACTIVE": 1,      // Sometimes Aryeo uses ACTIVE for Sale
+        "FOR LEASE": 2,
+        "COMING SOON": 2  // You might want these up high too
+    };
+
+    // 2. Sort the properties before displaying
+    const sortedProperties = [...properties].sort((a, b) => {
+        const statusA = (a.status || '').replace(/_/g, ' ').toUpperCase();
+        const statusB = (b.status || '').replace(/_/g, ' ').toUpperCase();
+
+        const weightA = priority[statusA] || 3; // Default to 3 if not in list
+        const weightB = priority[statusB] || 3;
+
+        return weightA - weightB; // Sorts 1, then 2, then 3
+    });
+
+    // 3. Render the sorted list
+    sortedProperties.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const addr = item.address?.unparsed_address || item.display_address || "Listing";
+        const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
         
-        properties.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            const addr = item.address?.unparsed_address || item.display_address || "Listing";
-            const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
-            
-            // Logic for the booking button
-            const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
+        const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
 
-            // Inject HTML into card
-            card.innerHTML = `
-                <img src="${item.thumbnail_url || item.main_image_url}">
-                <div class="card-body">
-                    <div>
-                        <span class="status-tag">${rawStatus}</span>
-                        <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
-                    </div>
-                    ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}', '${item.id}')">Book a Showing</button>` : ''}
+        card.innerHTML = `
+            <img src="${item.thumbnail_url || item.main_image_url}">
+            <div class="card-body">
+                <div>
+                    <span class="status-tag">${rawStatus}</span>
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:400; line-height:1.4;">${addr}</h3>
                 </div>
-            `;
-            
-            card.onclick = () => {
-                document.getElementById('modal-title').innerText = addr.toUpperCase();
-                document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
-                document.getElementById('modal').style.display = 'flex';
-                document.body.style.overflow = 'hidden'; 
-            };
-            grid.appendChild(card);
-        });
-    }
-
+                ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}', '${item.id}')">Book a Showing</button>` : ''}
+            </div>
+        `;
+        
+        card.onclick = () => {
+            document.getElementById('modal-title').innerText = addr.toUpperCase();
+            document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${item.id}`;
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        };
+        grid.appendChild(card);
+    });
+}
     // --- FORM FUNCTIONS ---
     // CORRECTED VERSION
 function openBookingForm(address, listingId) { // Added listingId here
