@@ -305,12 +305,12 @@
             </div>
             
             <div class="modal-body">
-                <div class="tour-container">
-                    <iframe id="tour-frame" src="" allowfullscreen></iframe>
-                </div>
-                
-                <div class="lead-form">
-                    <h3>Book a Showing</h3>
+    <div class="tour-container" id="tour-section">
+        <iframe id="tour-frame" src="" allowfullscreen></iframe>
+    </div>
+    
+    <div class="lead-form" id="booking-section">
+        <h3>Book a Showing</h3>
                     <form id="booking-form" onsubmit="submitLead(event)">
                         <input type="hidden" id="property-address" name="address">
                         <input type="hidden" id="listing-id" name="listing_id">
@@ -395,30 +395,44 @@
                             <span class="status-tag">${rawStatus}</span>
                             <h3 class="address">${addr}</h3>
                         </div>
-                        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingForm('${addr}', '${item.id}')">Book a Showing</button>` : ''}
+                        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${addr}', '${item.id}')">Book a Showing</button>` : ''}
                     </div>
                 `;
-                
+                // Clicking the card anywhere else opens the tour
+                card.onclick = () => openTour(addr, item.id);
                 // Clicking the card anywhere opens the modal tour
-                card.onclick = () => openBookingForm(addr, item.id);
+                //card.onclick = () => openBookingForm(addr, item.id);
                 grid.appendChild(card);
             });
         }
 
-        // --- 3. MODAL CONTROLS ---
-        function openBookingForm(address, id) {
-            document.getElementById('modal-title').innerText = address.toUpperCase();
-            
-            // Set hidden form fields for Make.com webhook
-            document.getElementById('property-address').value = address;
-            document.getElementById('listing-id').value = id;
-            
-            // Set iframe src (Replace with your actual Aryeo tour link structure)
-            document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${id}`;
-            
-            document.getElementById('modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
+        // Function 1: Opens ONLY the Virtual Tour
+function openTour(address, id) {
+    document.getElementById('modal-title').innerText = "Virtual Tour: " + address.toUpperCase();
+    document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${id}`;
+    
+    // Show tour, hide form
+    document.getElementById('tour-section').style.display = 'block';
+    document.getElementById('booking-section').style.display = 'none';
+    
+    document.getElementById('modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden'; 
+}
+
+// Function 2: Opens ONLY the Booking Form
+function openBookingOnly(address, id) {
+    document.getElementById('modal-title').innerText = "Request Showing: " + address.toUpperCase();
+    
+    document.getElementById('property-address').value = address;
+    document.getElementById('listing-id').value = id;
+    
+    // Hide tour, show form
+    document.getElementById('tour-section').style.display = 'none';
+    document.getElementById('booking-section').style.display = 'block';
+    
+    document.getElementById('modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden'; 
+}
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
