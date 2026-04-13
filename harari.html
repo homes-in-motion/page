@@ -19,24 +19,16 @@
         
         /* --- HEADER --- */
         .premium-header { 
-            background: white; 
-            padding: 40px 20px; 
-            border-bottom: 1px solid var(--border); 
-            margin-bottom: 30px; 
+            background: white; padding: 40px 20px; 
+            border-bottom: 1px solid var(--border); margin-bottom: 30px; 
         }
         
         .header-content { 
-            max-width: 1100px; 
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            gap: 40px;
+            max-width: 1100px; margin: 0 auto; display: flex; 
+            flex-direction: row; align-items: center; gap: 40px;
         }
 
         .brand-stack { flex: 1; }
-        
-        /* Changed name color to text-dark (black) */
         .name-and-title h1 { margin: 0; font-size: 2.2rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 1px; }
         .name-and-title p { color: var(--text-muted); margin: 5px 0 20px; font-size: 1rem; }
 
@@ -44,9 +36,8 @@
         .brand-button { 
             flex: 1; min-width: 140px; max-width: 200px; text-align: center;
             background: white; color: var(--brand-primary); 
-            border: 2px solid var(--brand-primary); 
-            padding: 10px; border-radius: 4px; text-decoration: none; 
-            font-size: 0.85rem; font-weight: bold; text-transform: uppercase;
+            border: 2px solid var(--brand-primary); padding: 10px; border-radius: 4px; 
+            text-decoration: none; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;
             transition: all 0.2s;
         }
 
@@ -68,8 +59,7 @@
         .controls-bar { display: flex; gap: 15px; margin-bottom: 30px; }
         .controls-bar input, .controls-bar select {
             padding: 12px 15px; border: 1px solid var(--border); border-radius: 4px;
-            font-size: 1rem; outline: none; transition: border-color 0.2s;
-            background: white; color: var(--text-dark);
+            font-size: 1rem; outline: none; transition: border-color 0.2s; background: white; color: var(--text-dark);
         }
         .controls-bar input:focus, .controls-bar select:focus { border-color: var(--brand-secondary); }
         .controls-bar input { flex: 1; }
@@ -94,7 +84,6 @@
             transition: all 0.2s; margin-top: 15px;
         }
         .booking-btn:hover { background: var(--brand-primary); color: var(--brand-white); }
-
         .loader-message { grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted); font-size: 1.1rem; }
 
         /* --- ADVANCED MODAL --- */
@@ -112,23 +101,19 @@
         .modal-header { padding: 15px 20px; background: var(--brand-white); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .modal-header h2 { font-size: 1.2rem; color: var(--text-dark); margin: 0;}
         .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
-        
         .modal-body { display: flex; flex-direction: column; overflow-y: auto; height: 100%; }
         
-        /* Tour specific */
         .tour-container { width: 100%; height: 100%; background: #000; flex: 1; }
         .tour-container iframe { width: 100%; height: 100%; min-height: 60vh; border: none; display: block; }
 
-        /* Form specific */
         .lead-form { padding: 25px; background: var(--brand-white); }
         .lead-form h3 { margin-top: 0; margin-bottom: 15px; color: var(--brand-primary); }
         .form-group { margin-bottom: 15px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box;}
         
         .submit-btn {
-            background: var(--brand-primary); color: var(--brand-white);
-            border: none; padding: 15px; width: 100%; border-radius: 4px; 
-            font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: opacity 0.2s;
+            background: var(--brand-primary); color: var(--brand-white); border: none; padding: 15px; width: 100%; 
+            border-radius: 4px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: opacity 0.2s;
         }
         .submit-btn:hover { opacity: 0.9; }
     </style>
@@ -169,7 +154,7 @@
         </div>
 
         <div id="listings-grid">
-            <div class="loader-message" id="loader">Loading Michael's Portfolio...</div>
+            <div class="loader-message" id="loader">Loading Portfolio...</div>
         </div>
     </div>
 
@@ -208,8 +193,11 @@
     </div>
 
 <script>
+    // --- SETTINGS ---
     const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
     const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/m9hipp4519tifrfqj7xo76myrneu3kwz';
+    
+    // IMPORTANT: Make sure this name matches Aryeo exactly
     const AGENT_SEARCH_NAME = 'Michael Harari';
     
     let allProperties = []; 
@@ -222,7 +210,7 @@
             const result = await response.json();
 
             if (!result.data || result.data.length === 0) {
-                grid.innerHTML = `<div class="loader-message">No properties found at this time.</div>`;
+                grid.innerHTML = `<div class="loader-message">No properties found for ${AGENT_SEARCH_NAME}.</div>`;
                 return;
             }
 
@@ -261,7 +249,7 @@
         grid.innerHTML = ''; 
 
         if (properties.length === 0) {
-            grid.innerHTML = `<div class="loader-message">No properties match your search.</div>`;
+            grid.innerHTML = `<div class="loader-message">No properties match your filter.</div>`;
             return;
         }
 
@@ -269,9 +257,11 @@
             const card = document.createElement('div');
             card.className = 'card';
             const addr = item.address?.unparsed_address || item.display_address || "Listing Details";
-            const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
             
-            // Logic to ONLY show button on "For Sale" or "Active"
+            // Clean up apostrophes so they don't break the HTML button JS
+            const safeAddr = addr.replace(/'/g, "\\'"); 
+            
+            const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
             const isAvailableForSale = (rawStatus === "FOR SALE" || rawStatus === "ACTIVE");
             
             card.innerHTML = `
@@ -281,11 +271,10 @@
                         <span class="status-tag">${rawStatus}</span>
                         <h3 style="margin:0; font-size:1.1rem; font-weight:600; line-height:1.3;">${addr}</h3>
                     </div>
-                    ${isAvailableForSale ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${addr}', '${item.id}')">Book a Showing</button>` : ''}
+                    ${isAvailableForSale ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${safeAddr}', '${item.id}')">Book a Showing</button>` : ''}
                 </div>
             `;
             
-            // Clicking the card anywhere opens the Tour
             card.onclick = () => openTour(addr, item.id);
             grid.appendChild(card);
         });
@@ -293,4 +282,78 @@
 
     // Modal Control: Opens Fullscreen Tour
     function openTour(address, id) {
-        document.getElementById('modal-title').innerText = address
+        document.getElementById('modal-title').innerText = address.toUpperCase();
+        document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${id}`;
+        
+        document.getElementById('tour-section').style.display = 'block';
+        document.getElementById('booking-section').style.display = 'none';
+        
+        document.getElementById('modal-box').classList.add('fullscreen');
+        document.getElementById('modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    // Modal Control: Opens Standard Size Booking Form
+    function openBookingOnly(address, id) {
+        document.getElementById('modal-title').innerText = "Request Showing";
+        
+        document.getElementById('property-address').value = address;
+        document.getElementById('listing-id').value = id;
+        
+        document.getElementById('tour-section').style.display = 'none';
+        document.getElementById('booking-section').style.display = 'block';
+        
+        document.getElementById('modal-box').classList.remove('fullscreen');
+        document.getElementById('modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('tour-frame').src = '';
+        document.getElementById('booking-form').reset();
+        document.getElementById('submit-btn-text').innerText = "Request Showing";
+        document.body.style.overflow = 'auto'; 
+    }
+
+    // Form Submission to Make.com Webhook
+    async function submitLead(event) {
+        event.preventDefault();
+        const btn = document.getElementById('submit-btn-text');
+        btn.innerText = "Sending...";
+        
+        const payload = {
+            name: document.getElementById('client-name').value,
+            phone: document.getElementById('client-phone').value,
+            email: document.getElementById('client-email').value,
+            property: document.getElementById('property-address').value,
+            listing_id: document.getElementById('listing-id').value
+        };
+
+        try {
+            await fetch(LEAD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            btn.innerText = "Request Sent Successfully!";
+            btn.style.backgroundColor = "#48bb78"; // Green success color
+            btn.style.color = "white";
+            
+            setTimeout(() => {
+                closeModal();
+                btn.style.backgroundColor = "var(--brand-primary)"; 
+            }, 2000);
+
+        } catch (error) {
+            btn.innerText = "Error. Please try again.";
+        }
+    }
+
+    window.onload = () => {
+        loadPortal();
+    };
+</script>
+</body>
+</html>
