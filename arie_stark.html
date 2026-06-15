@@ -166,9 +166,11 @@
             <input type="text" id="search-input" placeholder="Search by street name or city..." onkeyup="filterListings()">
             <select id="status-filter" onchange="filterListings()">
                 <option value="ALL">All Properties</option>
-                <option value="FOR SALE">For Sale</option>
-                <option value="FOR LEASE">For Lease</option>
+                <option value="AVAILABLE">Available (Sale & Lease)</option>
+                <option value="FOR SALE">For Sale Only</option>
+                <option value="FOR LEASE">For Lease Only</option>
                 <option value="SOLD">Sold</option>
+                <option value="LEASED">Leased</option>
             </select>
         </div>
 
@@ -219,8 +221,21 @@
         
         let allProperties = []; 
 
-        // 1. Initial Load
+        // 1. Initial Load & URL Routing
         async function loadPortal() {
+            // Check the URL for embed viewing preferences
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+            const statusDropdown = document.getElementById('status-filter');
+            
+            if (viewParam === 'available') {
+                statusDropdown.value = 'AVAILABLE';
+            } else if (viewParam === 'sold') {
+                statusDropdown.value = 'SOLD';
+            } else if (viewParam === 'all') {
+                statusDropdown.value = 'ALL';
+            }
+
             const grid = document.getElementById('listings-grid');
             try {
                 const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
@@ -254,6 +269,8 @@
                 let matchesStatus = false;
                 if (statusTerm === "ALL") {
                     matchesStatus = true;
+                } else if (statusTerm === "AVAILABLE" && (rawStatus === "FOR SALE" || rawStatus === "ACTIVE" || rawStatus === "FOR LEASE")) {
+                    matchesStatus = true;
                 } else if (statusTerm === "FOR SALE" && (rawStatus === "FOR SALE" || rawStatus === "ACTIVE")) {
                     matchesStatus = true;
                 } else if (rawStatus === statusTerm) {
@@ -272,22 +289,26 @@
             grid.innerHTML = ''; 
 
             if (properties.length === 0) {
-                grid.innerHTML = `<div style="text-align:center; grid-column: 1 / -1; padding:40px; color:#888;">No properties match your search.</div>`;
+                grid.innerHTML = `<div style="text-align:center; grid-column: 1 / -1; padding:40px; color:#888;">No properties match your filter.</div>`;
                 return;
             }
 
+            // Updated Priority Logic: For Sale (1), Sold (2), For Lease (3), Leased (4)
             const priority = {
                 "FOR SALE": 1,
                 "ACTIVE": 1,
-                "FOR LEASE": 2,
-                "COMING SOON": 2
+                "SOLD": 2,
+                "FOR LEASE": 3,
+                "LEASED": 4
             };
 
             const sortedProperties = [...properties].sort((a, b) => {
                 const statusA = (a.status || '').replace(/_/g, ' ').toUpperCase();
                 const statusB = (b.status || '').replace(/_/g, ' ').toUpperCase();
-                const weightA = priority[statusA] || 3; 
-                const weightB = priority[statusB] || 3;
+                
+                const weightA = priority[statusA] || 5; 
+                const weightB = priority[statusB] || 5;
+                
                 return weightA - weightB; 
             });
 
@@ -295,6 +316,7 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 const addr = item.address?.unparsed_address || item.display_address || "Listing";
+                const safeAddr = addr.replace(/'/g, "\\'"); 
                 const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
                 const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
 
@@ -305,7 +327,7 @@
                             <span class="status-tag">${rawStatus}</span>
                             <h3 class="address">${addr}</h3>
                         </div>
-                        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${addr}', '${item.id}')">Book a Showing</button>` : ''}
+                        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${safeAddr}', '${item.id}')">Book a Showing</button>` : ''}
                     </div>
                 `;
                 
