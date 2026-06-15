@@ -1,1049 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stark Team – Toronto Real Estate Experts</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arie Stark | Exclusive Property Portfolio</title>
+    <style>
+        :root {
+            --navy-lt: #253647;
+            --gold-lt: #E2C99A;
+            --bg-color: #f8f9fa;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --radius: 8px;
+        }
 
-  <style>
-    /* ─── TOKENS ─────────────────────────────────────────────── */
-    :root {
-      --navy:    #1C2B3A;
-      --navy-lt: #253647;
-      --gold:    #C9A96E;
-      --gold-lt: #E2C99A;
-      --cream:   #F8F5F0;
-      --stone:   #EDE9E2;
-      --slate:   #6B7A8D;
-      --text:    #2A2A2A;
-      --white:   #FFFFFF;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-      --ff-display: 'Playfair Display', Georgia, serif;
-      --ff-body:    'Inter', system-ui, sans-serif;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
 
-      --max-w: 1140px;
-      --section-pad: 96px 24px;
-    }
+        /* --- Portfolio Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-    /* ─── RESET ──────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 18px; }
-    body { font-family: var(--ff-body); color: var(--text); background: var(--white); line-height: 1.6; font-size: 1rem; }
-    img { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    ul { list-style: none; }
+        /* Search & Filter Bar CSS */
+        .controls-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .controls-bar input, .controls-bar select {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
 
-    /* ─── NAV ────────────────────────────────────────────────── */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: var(--white);
-      border-bottom: 1px solid var(--stone);
-      padding: 0 24px;
-      height: 72px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .nav__logo img { height: 44px; width: auto; }
-    .nav__logo-placeholder {
-      font-family: var(--ff-display);
-      font-size: 1.4rem; font-weight: 700;
-      color: var(--navy);
-      letter-spacing: 0.04em;
-    }
-    .nav__links {
-      display: flex; gap: 32px;
-      font-size: 1rem; font-weight: 500;
-      color: var(--slate);
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
-    .nav__links a:hover { color: var(--navy); }
-    .nav__cta {
-      background: var(--navy); color: var(--white);
-      padding: 10px 22px; border-radius: 2px;
-      font-size: 0.95rem; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      transition: background 0.2s;
-    }
-    .nav__cta:hover { background: var(--gold); color: var(--navy); }
+        .controls-bar input:focus, .controls-bar select:focus {
+            border-color: var(--navy-lt);
+        }
 
-    /* ─── HERO ───────────────────────────────────────────────── */
-    .hero {
-      margin-top: 72px;
-      position: relative;
-      min-height: calc(100vh - 72px);
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background: var(--navy);
-    }
+        .controls-bar input { flex: 1; }
+        .controls-bar select { min-width: 200px; cursor: pointer; }
 
-    /* House photo fills the full background */
-    .hero__bg {
-      position: absolute; inset: 0;
-      z-index: 0;
-    }
-    .hero__bg img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: center;
-      opacity: 0.22;
-      filter: grayscale(30%);
-    }
-    /* Sold ribbon over the house bg */
-    .hero__sold-ribbon {
-      position: absolute;
-      top: 40px; left: 0;
-      background: #C0392B;
-      color: var(--white);
-      font-family: var(--ff-body);
-      font-size: 0.8rem; font-weight: 800;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      padding: 8px 28px 8px 20px;
-      z-index: 2;
-      box-shadow: 2px 2px 12px rgba(0,0,0,0.4);
-      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
-    }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
 
-    /* Dark gradient over bg so text is readable */
-    .hero::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(28,43,58,0.97) 0%,
-        rgba(28,43,58,0.85) 55%,
-        rgba(28,43,58,0.5) 100%
-      );
-      z-index: 1;
-    }
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    /* Inner layout */
-    .hero__inner {
-      position: relative; z-index: 2;
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 80px 24px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 64px;
-      align-items: center;
-    }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+        .card-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 
-    /* Left: text content */
-    .hero__content {}
+        .status-tag {
+            display: inline-block;
+            background: var(--navy-lt);
+            color: var(--gold-lt);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
 
-    .hero__eyebrow {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 24px;
-    }
-    .hero__eyebrow-line { width: 40px; height: 1px; background: var(--gold); flex-shrink: 0; }
-    .hero__eyebrow-text {
-      font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold);
-    }
-    .hero__headline {
-      font-family: var(--ff-display);
-      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: var(--white);
-      margin-bottom: 20px;
-    }
-    .hero__headline em { font-style: italic; color: var(--gold); }
-    .hero__sub {
-      font-size: 1.15rem; font-weight: 400;
-      color: rgba(255,255,255,0.78);
-      max-width: 520px;
-      margin-bottom: 36px;
-      line-height: 1.8;
-    }
-    .hero__stats {
-      display: flex; gap: 40px;
-      margin-bottom: 40px;
-      align-items: flex-start;
-    }
-    .hero__stat-num {
-      font-family: var(--ff-display);
-      font-size: 2.8rem; font-weight: 700;
-      color: var(--white); line-height: 1;
-    }
-    .hero__stat-label {
-      font-size: 0.95rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--gold); margin-top: 6px;
-    }
-    .hero__actions { display: flex; gap: 16px; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--gold); color: var(--navy);
-      padding: 15px 36px; border-radius: 2px;
-      font-size: 0.88rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      transition: opacity 0.2s;
-    }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-outline {
-      border: 1px solid rgba(255,255,255,0.35); color: var(--white);
-      padding: 15px 36px; border-radius: 2px;
-      font-size: 0.88rem; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+        .address { font-size: 1.1rem; font-weight: 600; line-height: 1.4; }
 
-    /* Right: agent cards */
-    .hero__agents {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .hero__agent-card {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(201,169,110,0.25);
-      border-radius: 6px;
-      padding: 16px 20px;
-      backdrop-filter: blur(4px);
-    }
-    .hero__agent-card img {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      object-fit: cover; object-position: center top;
-      border: 2px solid var(--gold);
-      flex-shrink: 0;
-    }
-    .hero__agent-card-placeholder {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      background: var(--navy-lt);
-      border: 2px solid var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--ff-display);
-      font-size: 2rem; color: rgba(201,169,110,0.4);
-      flex-shrink: 0;
-    }
-    .hero__agent-card-info {}
-    .hero__agent-card-name {
-      font-family: var(--ff-display);
-      font-size: 1.25rem; font-weight: 600;
-      color: var(--white);
-      margin-bottom: 4px;
-    }
-    .hero__agent-card-role {
-      font-size: 0.9rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-    .hero__agent-card-tag {
-      display: inline-block;
-      background: rgba(201,169,110,0.15);
-      border: 1px solid rgba(201,169,110,0.3);
-      border-radius: 20px;
-      padding: 3px 12px;
-      font-size: 0.85rem; font-weight: 500;
-      color: rgba(255,255,255,0.7);
-      letter-spacing: 0.05em;
-    }
+        .booking-btn {
+            background: transparent;
+            color: var(--navy-lt);
+            border: 2px solid var(--navy-lt);
+            padding: 10px;
+            width: 100%;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-    /* ─── placeholder portrait box (legacy, keep for team cards) */
-    .hero__agent-placeholder {
-      width: 100%; height: 100%;
-      background: var(--navy-lt);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--ff-display);
-      font-size: 3rem; color: rgba(201,169,110,0.3);
-    }
+        .booking-btn:hover { background: var(--navy-lt); color: var(--gold-lt); }
 
-    /* ─── NEGOTIATION BANNER ──────────────────────────────────── */
-    .banner {
-      background: var(--gold);
-      padding: 28px 24px;
-      text-align: center;
-    }
-    .banner__text {
-      font-family: var(--ff-display);
-      font-size: clamp(1.1rem, 2vw, 1.4rem);
-      font-weight: 600;
-      color: var(--navy);
-      letter-spacing: 0.02em;
-    }
-    .banner__text em { font-style: italic; }
+        /* --- Modal Tour & Booking System --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px;
+            backdrop-filter: blur(5px);
+        }
 
-    /* ─── SECTION SHARED ─────────────────────────────────────── */
-    .section { padding: var(--section-pad); }
-    .section__inner { max-width: var(--max-w); margin: 0 auto; }
-    .section__eyebrow {
-      font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 14px;
-    }
-    .section__heading {
-      font-family: var(--ff-display);
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 700;
-      color: var(--navy);
-      line-height: 1.2;
-      margin-bottom: 20px;
-    }
-    .section__body {
-      font-size: 1.1rem; font-weight: 400;
-      color: var(--slate);
-      line-height: 1.85;
-      max-width: 580px;
-    }
+        .modal-content {
+            background: var(--white); width: 100%; max-width: 900px;
+            border-radius: var(--radius); overflow: hidden;
+            display: flex; flex-direction: column; max-height: 90vh;
+            transition: all 0.3s ease; 
+        }
 
-    /* ─── NEGOTIATION MASTERY ────────────────────────────────── */
-    .mastery { background: var(--cream); }
-    .mastery__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .mastery__pillars {
-      display: grid;
-      gap: 28px;
-      margin-top: 40px;
-    }
-    .mastery__pillar {
-      display: flex; gap: 20px; align-items: flex-start;
-    }
-    .mastery__pillar-icon {
-      width: 44px; height: 44px;
-      border: 1px solid var(--gold);
-      border-radius: 2px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      color: var(--gold);
-      font-size: 1.1rem;
-    }
-    .mastery__pillar-title {
-      font-family: var(--ff-display);
-      font-size: 1.15rem; font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 4px;
-    }
-    .mastery__pillar-desc {
-      font-size: 1rem; font-weight: 400;
-      color: var(--slate); line-height: 1.75;
-    }
+        /* Fullscreen Class for Virtual Tour */
+        .modal-content.fullscreen {
+            max-width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            border-radius: 0;
+        }
 
-    /* big quote */
-    .mastery__quote-block {
-      background: var(--navy);
-      padding: 48px;
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-    }
-    .mastery__quote-block::before {
-      content: '\201C';
-      font-family: var(--ff-display);
-      font-size: 14rem;
-      line-height: 1;
-      color: rgba(201,169,110,0.08);
-      position: absolute;
-      top: -20px; left: 16px;
-      pointer-events: none;
-    }
-    .mastery__quote-text {
-      font-family: var(--ff-display);
-      font-size: clamp(1.3rem, 2vw, 1.7rem);
-      font-style: italic;
-      color: var(--white);
-      line-height: 1.5;
-      margin-bottom: 28px;
-      position: relative;
-    }
-    .mastery__quote-gold-bar {
-      width: 40px; height: 3px;
-      background: var(--gold);
-      margin-bottom: 20px;
-    }
-    .mastery__quote-attr {
-      font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--gold);
-    }
+        .modal-header {
+            padding: 15px 20px; background: var(--white);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #eee;
+        }
 
-    /* ─── TEAM ───────────────────────────────────────────────── */
-    .team { background: var(--white); }
-    .team__intro {
-      text-align: center;
-      margin-bottom: 64px;
-    }
-    .team__intro .section__body {
-      max-width: 620px;
-      margin: 0 auto;
-    }
-    .team__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-    }
-    .team__card {
-      border: 1px solid var(--stone);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .team__card-img {
-      background: var(--stone);
-      display: flex; align-items: center; justify-content: center;
-      padding: 36px 24px 24px;
-    }
-    .team__card-img img {
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      object-fit: cover; object-position: center top;
-      border: 3px solid var(--gold);
-      display: block;
-    }
-    .team__card-img-placeholder {
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      background: var(--navy-lt);
-      border: 3px solid var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--ff-display);
-      font-size: 4rem; color: rgba(201,169,110,0.3);
-    }
-    .team__card-body { padding: 32px; }
-    .team__card-name {
-      font-family: var(--ff-display);
-      font-size: 1.6rem; font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 4px;
-    }
-    .team__card-role {
-      font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
-    .team__card-desc {
-      font-size: 1rem; font-weight: 400;
-      color: var(--slate); line-height: 1.8;
-    }
-    .team__card-stats {
-      display: flex; gap: 24px;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--stone);
-    }
-    .team__card-stat-num {
-      font-family: var(--ff-display);
-      font-size: 1.5rem; font-weight: 700;
-      color: var(--navy);
-    }
-    .team__card-stat-label {
-      font-size: 0.9rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--slate);
-      margin-top: 2px;
-    }
+        .modal-header h2 { font-size: 1.2rem; color: var(--text-dark); }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+        .modal-body { display: flex; flex-direction: column; overflow-y: auto; height: 100%; }
 
-    /* ─── LISTINGS ───────────────────────────────────────────── */
-    .listings { background: var(--cream); }
-    .listings__tabs {
-      display: flex; gap: 0;
-      margin-bottom: 40px;
-      border-bottom: 1px solid var(--stone);
-    }
-    .listings__tab {
-      padding: 12px 28px;
-      font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--slate);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .listings__tab.active {
-      color: var(--navy);
-      border-bottom-color: var(--gold);
-    }
-    .listings__tab:hover { color: var(--navy); }
-    .panel { display: none; }
-    .panel.active { display: block; }
+        /* Expand tour container to fill screen */
+        .tour-container { width: 100%; height: 100%; background: #000; flex: 1; }
+        .tour-container iframe { width: 100%; height: 100%; border: none; display: block; }
 
-    /* ─── SERVICES ───────────────────────────────────────────── */
-    .services { background: var(--white); }
-    .services__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      margin-top: 56px;
-    }
-    .services__card {
-      padding: 36px 32px;
-      border: 1px solid var(--stone);
-      border-radius: 4px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .services__card:hover {
-      border-color: var(--gold);
-      box-shadow: 0 4px 24px rgba(28,43,58,0.07);
-    }
-    .services__icon {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-    }
-    .services__card-title {
-      font-family: var(--ff-display);
-      font-size: 1.25rem; font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 12px;
-    }
-    .services__card-desc {
-      font-size: 1rem; font-weight: 400;
-      color: var(--slate); line-height: 1.8;
-    }
+        .lead-form { padding: 25px; background: var(--bg-color); }
+        .lead-form h3 { margin-bottom: 15px; color: var(--navy-lt); }
+        .form-group { margin-bottom: 15px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        
+        .submit-btn {
+            background: var(--navy-lt); color: var(--gold-lt);
+            border: none; padding: 15px; width: 100%;
+            border-radius: var(--radius); font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .submit-btn:hover { opacity: 0.9; }
 
-    /* ─── CONTACT ────────────────────────────────────────────── */
-    .contact { background: var(--navy); padding: var(--section-pad); }
-    .contact__inner {
-      max-width: var(--max-w); margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: start;
-    }
-    .contact__heading {
-      font-family: var(--ff-display);
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 700; color: var(--white);
-      line-height: 1.2; margin-bottom: 20px;
-    }
-    .contact__heading em { color: var(--gold); font-style: italic; }
-    .contact__sub {
-      font-size: 1.05rem; font-weight: 400;
-      color: rgba(255,255,255,0.7); line-height: 1.85;
-      margin-bottom: 40px;
-    }
-    .contact__detail {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 16px;
-    }
-    .contact__detail-icon {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(201,169,110,0.4);
-      border-radius: 2px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; color: var(--gold);
-      flex-shrink: 0;
-    }
-    .contact__detail-text {
-      font-size: 1rem; font-weight: 400;
-      color: rgba(255,255,255,0.75);
-    }
-    .contact__detail-text strong { font-weight: 600; color: var(--white); }
-
-    /* form */
-    .contact__form { display: grid; gap: 16px; }
-    .contact__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .contact__field { display: flex; flex-direction: column; gap: 6px; }
-    .contact__field label {
-      font-size: 0.85rem; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-    }
-    .contact__field input,
-    .contact__field textarea,
-    .contact__field select {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 2px;
-      padding: 12px 16px;
-      font-family: var(--ff-body);
-      font-size: 1rem; font-weight: 300;
-      color: var(--white);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .contact__field input:focus,
-    .contact__field textarea:focus,
-    .contact__field select:focus {
-      border-color: var(--gold);
-    }
-    .contact__field input::placeholder,
-    .contact__field textarea::placeholder { color: rgba(255,255,255,0.25); }
-    .contact__field textarea { resize: vertical; min-height: 100px; }
-    .contact__field select option { background: var(--navy); color: var(--white); }
-
-    .contact__submit {
-      background: var(--gold); color: var(--navy);
-      border: none; cursor: pointer;
-      padding: 15px 32px;
-      font-family: var(--ff-body);
-      font-size: 1rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      border-radius: 2px;
-      transition: opacity 0.2s;
-      align-self: start;
-    }
-    .contact__submit:hover { opacity: 0.85; }
-
-    /* ─── FOOTER ─────────────────────────────────────────────── */
-    .footer {
-      background: #111820;
-      padding: 40px 24px;
-      text-align: center;
-    }
-    .footer__inner { max-width: var(--max-w); margin: 0 auto; }
-    .footer__logo {
-      font-family: var(--ff-display);
-      font-size: 1.3rem; font-weight: 700;
-      color: var(--white); letter-spacing: 0.04em;
-      margin-bottom: 8px;
-    }
-    .footer__tagline {
-      font-size: 0.9rem; font-weight: 400;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 28px;
-    }
-    .footer__links {
-      display: flex; justify-content: center; gap: 28px;
-      font-size: 0.95rem; color: rgba(255,255,255,0.4);
-      margin-bottom: 24px;
-    }
-    .footer__links a:hover { color: var(--white); }
-    .footer__copy {
-      font-size: 0.85rem; color: rgba(255,255,255,0.25);
-    }
-
-    /* ─── RESPONSIVE ─────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .hero__inner { grid-template-columns: 1fr; gap: 40px; }
-      .hero__agents { flex-direction: row; gap: 16px; }
-      .hero__agent-card { flex: 1; flex-direction: column; text-align: center; padding: 16px; }
-      .hero__agent-card img { width: 72px; height: 72px; }
-      .mastery__grid { grid-template-columns: 1fr; }
-      .team__grid { grid-template-columns: 1fr; }
-      .services__grid { grid-template-columns: 1fr 1fr; }
-      .contact__inner { grid-template-columns: 1fr; gap: 48px; }
-      .contact__row { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      :root { --section-pad: 64px 20px; }
-      .nav__links { display: none; }
-      .hero__inner { padding: 56px 20px; }
-      .hero__agents { flex-direction: column; }
-      .hero__stats { flex-wrap: wrap; gap: 24px; }
-      .services__grid { grid-template-columns: 1fr; }
-    }
-
-    /* ─── SCROLL REVEAL ──────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-  </style>
+        @media (max-width: 600px) {
+            .controls-bar { flex-direction: column; } 
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ══ NAV ═══════════════════════════════════════════════════ -->
-  <nav class="nav">
-    <div class="nav__logo">
-      <!-- REPLACE with: <img src="your-logo.png" alt="Stark Team"> -->
-      <span class="nav__logo-placeholder">STARK<br><small style="font-size:0.55em;letter-spacing:0.18em;font-weight:400;color:var(--slate)">A FAMILY TEAM</small></span>
-    </div>
-    <ul class="nav__links">
-      <li><a href="#team">The Team</a></li>
-      <li><a href="#listings">Listings</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <a href="#contact" class="nav__cta">Book a Call</a>
-  </nav>
-
-  <!-- ══ HERO ══════════════════════════════════════════════════ -->
-  <section class="hero">
-
-    <!-- Full-bleed house background -->
-    <div class="hero__bg">
-      <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1600&q=80" alt="Sold Toronto property" />
-    </div>
-
-    <!-- Sold ribbon sits over the bg, under the content -->
-    <div class="hero__sold-ribbon">✦ Sold</div>
-
-    <div class="hero__inner">
-
-      <!-- LEFT: headline + copy + CTAs -->
-      <div class="hero__content">
-        <div class="hero__eyebrow">
-          <div class="hero__eyebrow-line"></div>
-          <span class="hero__eyebrow-text">Toronto's Negotiation Specialists</span>
-        </div>
-        <h1 class="hero__headline">
-          We don't just<br>list homes.<br>
-          We <em>fight</em> for them.
-        </h1>
-        <p class="hero__sub">
-          Arie and Nat Stark — a son and father team with a combined 40+ years of experience in the Toronto and Vaughan markets. Backed by Nat's 36-year legacy and led day-to-day by Arie, our reputation is built on one thing: getting you the best possible outcome at the table.
-        </p>
-        <div class="hero__stats">
-          <div>
-            <div class="hero__stat-num">40+</div>
-            <div class="hero__stat-label">Years Combined</div>
-          </div>
-        </div>
-        <div class="hero__actions">
-          <a href="#listings" class="btn-primary">View Listings</a>
-          <a href="#contact" class="btn-outline">Book a Consultation</a>
-        </div>
-      </div>
-
-      <!-- RIGHT: agent portrait cards -->
-      <div class="hero__agents">
-
-        <div class="hero__agent-card">
-          <img src="http://starkteam.ca/wp-content/uploads/2023/07/arie_stark.jpg" alt="Arie Stark" />
-          <div class="hero__agent-card-info">
-            <div class="hero__agent-card-name">Arie Stark</div>
-            <div class="hero__agent-card-role">Realtor</div>
-            <span class="hero__agent-card-tag">Your Lead Contact</span>
-          </div>
-        </div>
-
-        <div class="hero__agent-card">
-          <img src="http://starkteam.ca/wp-content/uploads/2026/06/nat_stark_w-1.jpg" alt="Nat Stark" />
-          <div class="hero__agent-card-info">
-            <div class="hero__agent-card-name">Nat Stark</div>
-            <div class="hero__agent-card-role">Co-Founder</div>
-            <span class="hero__agent-card-tag">36 Years Experience</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ BANNER ════════════════════════════════════════════════ -->
-  <div class="banner">
-    <p class="banner__text">
-      "<em>Every deal is a negotiation.</em> Our clients don't leave money on the table — ever."
-    </p>
-  </div>
-
-  <!-- ══ NEGOTIATION MASTERY ═══════════════════════════════════ -->
-  <section class="mastery section" id="services">
-    <div class="section__inner">
-      <div class="mastery__grid">
-        <div>
-          <p class="section__eyebrow">Our Edge</p>
-          <h2 class="section__heading">Mastery at the negotiating table</h2>
-          <p class="section__body">
-            With decades of experience across hundreds of transactions, Arie and Nat have developed a deep, data-driven approach to negotiation that consistently delivers top dollar for sellers and the most favourable terms for buyers.
-          </p>
-          <div class="mastery__pillars reveal">
-            <div class="mastery__pillar">
-              <div class="mastery__pillar-icon">⚖</div>
-              <div>
-                <div class="mastery__pillar-title">Market Intelligence</div>
-                <div class="mastery__pillar-desc">Deep knowledge of Toronto and Vaughan pricing dynamics means every offer we make is backed by real data, not guesswork.</div>
-              </div>
-            </div>
-            <div class="mastery__pillar">
-              <div class="mastery__pillar-icon">🛡</div>
-              <div>
-                <div class="mastery__pillar-title">Tenacious Advocacy</div>
-                <div class="mastery__pillar-desc">Our clients describe us as relentless negotiators. We don't settle — we push for terms that put you ahead.</div>
-              </div>
-            </div>
-            <div class="mastery__pillar">
-              <div class="mastery__pillar-icon">🤝</div>
-              <div>
-                <div class="mastery__pillar-title">Relationship Capital</div>
-                <div class="mastery__pillar-desc">Decades of working with agents, lawyers, and lenders across the GTA gives our clients access no newcomer can match.</div>
-              </div>
-            </div>
-            <div class="mastery__pillar">
-              <div class="mastery__pillar-icon">📋</div>
-              <div>
-                <div class="mastery__pillar-title">Comparative Market Analysis</div>
-                <div class="mastery__pillar-desc">Every listing and offer is anchored in a thorough CMA so you always know exactly where you stand.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mastery__quote-block reveal">
-          <p class="mastery__quote-text">
-            "The best negotiators don't win by being aggressive. They win by being the most prepared person in the room."
-          </p>
-          <div class="mastery__quote-gold-bar"></div>
-          <div class="mastery__quote-attr">Nat Stark — Co-Founder, 36+ Years</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ TEAM ═══════════════════════════════════════════════════ -->
-  <section class="team section" id="team">
-    <div class="section__inner">
-      <div class="team__intro">
-        <p class="section__eyebrow">The Stark Team</p>
-        <h2 class="section__heading">A father &amp; son legacy built on results</h2>
-        <p class="section__body">
-          Two generations, one mission: to deliver an unmatched real estate experience through integrity, expertise, and relentless dedication to our clients.
-        </p>
-      </div>
-
-      <div class="team__grid">
-
-        <!-- Arie -->
-        <div class="team__card reveal">
-          <div class="team__card-img">
-            <img src="http://starkteam.ca/wp-content/uploads/2023/07/arie_stark.jpg" alt="Arie Stark">
-          </div>
-          <div class="team__card-body">
-            <div class="team__card-name">Arie Stark</div>
-            <div class="team__card-role">Realtor · Your Direct Contact</div>
-            <p class="team__card-desc">
-              Growing up around real estate gave Arie an instinct for the market from an early age. With 5 years of hands-on experience in Toronto and Vaughan, and the benefit of Nat's 36-year mentorship, Arie brings energy, dedication, and sharp negotiating skills to every transaction. He is your primary point of contact — accessible, responsive, and fully committed to your outcome.
-            </p>
-            <div class="team__card-stats">
-              <div>
-                <div class="team__card-stat-num">5+</div>
-                <div class="team__card-stat-label">Years in Real Estate</div>
-              </div>
-              <div>
-                <div class="team__card-stat-num">★★★★★</div>
-                <div class="team__card-stat-label">Client Rating</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Nat -->
-        <div class="team__card reveal">
-          <div class="team__card-img">
-            <img src="http://starkteam.ca/wp-content/uploads/2026/06/nat_stark_w-1.jpg" alt="Nat Stark">
-          </div>
-          <div class="team__card-body">
-            <div class="team__card-name">Nat Stark</div>
-            <div class="team__card-role">Co-Founder · 36 Years Experience</div>
-            <p class="team__card-desc">
-              With 36 years in the Toronto and Vaughan real estate markets, Nat Stark is the foundation the team is built on. Highly regarded by clients and peers for his integrity, market knowledge, and exceptional negotiating instincts, Nat's experience continues to guide every decision the team makes. He remains a trusted resource and mentor behind every deal.
-            </p>
-            <div class="team__card-stats">
-              <div>
-                <div class="team__card-stat-num">36+</div>
-                <div class="team__card-stat-label">Years in Real Estate</div>
-              </div>
-              <div>
-                <div class="team__card-stat-num">★★★★★</div>
-                <div class="team__card-stat-label">Client Rating</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ LISTINGS ══════════════════════════════════════════════ -->
-  <section class="listings section" id="listings">
-    <div class="section__inner">
-      <p class="section__eyebrow">Properties</p>
-      <h2 class="section__heading">Current &amp; Recent Listings</h2>
-
-      <!-- TAB NAV -->
-      <div class="listings__tabs">
-        <div class="listings__tab active" onclick="switchTab('featured', this)">Featured</div>
-        <div class="listings__tab" onclick="switchTab('active', this)">Active Listings</div>
-        <div class="listings__tab" onclick="switchTab('sold', this)">Sold</div>
-      </div>
-
-      <!-- FEATURED PANEL -->
-      <div id="panel-featured" class="panel active">
-        <iframe
-          src="https://agents.homesinmotion.ca/arie_stark.html?view=available"
-          width="100%" height="780"
-          frameborder="0" scrolling="auto"
-          allowfullscreen
-          style="display:block; border:none; border-radius:4px;">
-        </iframe>
-      </div>
-
-      <!-- ACTIVE LISTINGS PANEL -->
-      <!-- CHANGE URL to the correct active listings URL when ready -->
-      <div id="panel-active" class="panel">
-        <iframe
-          src="https://agents.homesinmotion.ca/arie_stark.html?view=all"
-          width="100%" height="780"
-          frameborder="0" scrolling="auto"
-          allowfullscreen
-          style="display:block; border:none; border-radius:4px;">
-        </iframe>
-      </div>
-
-      <!-- SOLD PANEL -->
-      <!-- CHANGE URL to the correct sold listings URL when ready -->
-      <div id="panel-sold" class="panel">
-        <iframe
-          src="https://agents.homesinmotion.ca/arie_stark.html?view=sold"
-          width="100%" height="780"
-          frameborder="0" scrolling="auto"
-          allowfullscreen
-          style="display:block; border:none; border-radius:4px;">
-        </iframe>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ══ SERVICES ══════════════════════════════════════════════ -->
-  <section class="services section">
-    <div class="section__inner">
-      <p class="section__eyebrow">What We Do</p>
-      <h2 class="section__heading">Full-service real estate, start to finish</h2>
-      <div class="services__grid">
-        <div class="services__card reveal">
-          <div class="services__icon">🏡</div>
-          <div class="services__card-title">Sell Your Home</div>
-          <p class="services__card-desc">Strategic pricing, professional staging guidance, free photoshoot, and expert negotiation — we sell faster and for more.</p>
-        </div>
-        <div class="services__card reveal">
-          <div class="services__icon">🔑</div>
-          <div class="services__card-title">Buy a Home</div>
-          <p class="services__card-desc">From first-time buyers to seasoned investors, we help you find the right property and negotiate terms that protect your interests.</p>
-        </div>
-        <div class="services__card reveal">
-          <div class="services__icon">📊</div>
-          <div class="services__card-title">Free Home Valuation</div>
-          <p class="services__card-desc">Curious what your home is worth in today's market? We provide a thorough, no-obligation comparative market analysis.</p>
-        </div>
-        <div class="services__card reveal">
-          <div class="services__icon">📸</div>
-          <div class="services__card-title">Free Photoshoot</div>
-          <p class="services__card-desc">Every listing we take gets professional photography at no cost — because first impressions close deals.</p>
-        </div>
-        <div class="services__card reveal">
-          <div class="services__icon">📈</div>
-          <div class="services__card-title">Investment Properties</div>
-          <p class="services__card-desc">Looking to grow your portfolio? We identify opportunities and negotiate acquisitions with an investor's mindset.</p>
-        </div>
-        <div class="services__card reveal">
-          <div class="services__icon">🕐</div>
-          <div class="services__card-title">24/7 Support</div>
-          <p class="services__card-desc">Real estate doesn't work 9-to-5. Neither do we. Our clients always have a direct line when it counts.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ CONTACT ════════════════════════════════════════════════ -->
-  <section class="contact" id="contact">
-    <div class="contact__inner">
-      <div>
-        <h2 class="contact__heading">Ready to make your <em>next move?</em></h2>
-        <p class="contact__sub">
-          Whether you're buying, selling, or just exploring your options — a conversation with the Stark Team costs nothing and could be worth everything.
-        </p>
-        <div class="contact__detail">
-          <div class="contact__detail-icon">📞</div>
-          <div class="contact__detail-text"><strong>(647) 992-0555</strong></div>
-        </div>
-        <div class="contact__detail">
-          <div class="contact__detail-icon">✉</div>
-          <div class="contact__detail-text"><strong>arie.stark1@gmail.com</strong></div>
-        </div>
-        <div class="contact__detail">
-          <div class="contact__detail-icon">📍</div>
-          <div class="contact__detail-text">7646 Yonge St, Thornhill, ON L4J 1V9</div>
-        </div>
-      </div>
-
-      <div>
-        <!-- OPTION A: Use this native form and wire to WPForms/Formspree/etc. -->
-        <!-- OPTION B: Replace the entire form div with your WPForms shortcode or embed -->
-        <div class="contact__form">
-          <div class="contact__row">
-            <div class="contact__field">
-              <label>First Name</label>
-              <input type="text" placeholder="Jane" />
-            </div>
-            <div class="contact__field">
-              <label>Last Name</label>
-              <input type="text" placeholder="Smith" />
-            </div>
-          </div>
-          <div class="contact__row">
-            <div class="contact__field">
-              <label>Email</label>
-              <input type="email" placeholder="jane@example.com" />
-            </div>
-            <div class="contact__field">
-              <label>Phone</label>
-              <input type="tel" placeholder="(647) 000-0000" />
-            </div>
-          </div>
-          <div class="contact__field">
-            <label>I'm interested in</label>
-            <select>
-              <option value="">Select one…</option>
-              <option>Selling my home</option>
-              <option>Buying a home</option>
-              <option>Free home valuation</option>
-              <option>Investment property</option>
-              <option>Just exploring</option>
+    <div class="container">
+        <div class="controls-bar">
+            <input type="text" id="search-input" placeholder="Search by street name or city..." onkeyup="filterListings()">
+            <select id="status-filter" onchange="filterListings()">
+                <option value="ALL">All Properties</option>
+                <option value="AVAILABLE">Available (Sale & Lease)</option>
+                <option value="FOR SALE">For Sale Only</option>
+                <option value="FOR LEASE">For Lease Only</option>
+                <option value="SOLD">Sold</option>
+                <option value="LEASED">Leased</option>
             </select>
-          </div>
-          <div class="contact__field">
-            <label>Message</label>
-            <textarea placeholder="Tell us a bit about your situation…"></textarea>
-          </div>
-          <button class="contact__submit" type="button">Send Message →</button>
         </div>
-      </div>
+
+        <div class="grid" id="listings-grid">
+            <!-- Properties dynamically load here -->
+        </div>
     </div>
-  </section>
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__logo">STARK</div>
-      <div class="footer__tagline">A Family Team · Toronto Real Estate</div>
-      <ul class="footer__links">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Properties</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-      <p class="footer__copy">© 2025 Stark Team. All rights reserved. Brokerage details here.</p>
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-header">
+                <h2 id="modal-title">Property Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="tour-container" id="tour-section">
+                    <iframe id="tour-frame" src="" allowfullscreen></iframe>
+                </div>
+                
+                <div class="lead-form" id="booking-section">
+                    <h3>Book a Showing</h3>
+                    <form id="booking-form" onsubmit="submitLead(event)">
+                        <input type="hidden" id="property-address" name="address">
+                        <input type="hidden" id="listing-id" name="listing_id">
+                        
+                        <div class="form-group">
+                            <input type="text" id="client-name" placeholder="Your Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="client-phone" placeholder="Your Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="client-email" placeholder="Your Email Address" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="submit-btn-text">Request Showing</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <script>
-    /* ── TAB SWITCHER ─────────────────────────────────────────── */
-    function switchTab(panelId, tabEl) {
-      document.querySelectorAll('.listings__tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      tabEl.classList.add('active');
-      document.getElementById('panel-' + panelId).classList.add('active');
-    }
+    <script>
+        // --- SETTINGS ---
+        const BASE_WEBHOOK_URL = 'https://hook.us2.make.com/dmsl6dvmmv19yjda8btj72odci0sfeff';
+        const LEAD_WEBHOOK_URL = 'https://hook.us2.make.com/m9hipp4519tifrfqj7xo76myrneu3kwz';
+        const AGENT_SEARCH_NAME = 'Arie Stark';
+        
+        let allProperties = []; 
 
-    /* ── SCROLL REVEAL ────────────────────────────────────────── */
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.12 }
-    );
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  </script>
+        // 1. Initial Load & URL Routing
+        async function loadPortal() {
+            // Check the URL for embed viewing preferences
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+            const statusDropdown = document.getElementById('status-filter');
+            
+            if (viewParam === 'available') {
+                statusDropdown.value = 'AVAILABLE';
+            } else if (viewParam === 'sold') {
+                statusDropdown.value = 'SOLD';
+            } else if (viewParam === 'all') {
+                statusDropdown.value = 'ALL';
+            }
 
+            const grid = document.getElementById('listings-grid');
+            try {
+                const fetchUrl = `${BASE_WEBHOOK_URL}?search=${encodeURIComponent(AGENT_SEARCH_NAME)}`;
+                const response = await fetch(fetchUrl);
+                const result = await response.json();
+
+                if (!result.data || result.data.length === 0) {
+                    grid.innerHTML = `<div style="text-align:center; padding:60px; color:#888;">No properties found.</div>`;
+                    return;
+                }
+
+                allProperties = result.data;
+                filterListings(); 
+
+            } catch (err) {
+                grid.innerHTML = `<div style="text-align:center; color:red; padding:60px;">Connection Error. Please refresh.</div>`;
+            }
+        }
+
+        // 2. Filter Logic
+        function filterListings() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusTerm = document.getElementById('status-filter').value;
+
+            const filtered = allProperties.filter(item => {
+                const addr = (item.address?.unparsed_address || item.display_address || "").toLowerCase();
+                const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
+                
+                const matchesSearch = addr.includes(searchTerm);
+                
+                let matchesStatus = false;
+                if (statusTerm === "ALL") {
+                    matchesStatus = true;
+                } else if (statusTerm === "AVAILABLE" && (rawStatus === "FOR SALE" || rawStatus === "ACTIVE" || rawStatus === "FOR LEASE")) {
+                    matchesStatus = true;
+                } else if (statusTerm === "FOR SALE" && (rawStatus === "FOR SALE" || rawStatus === "ACTIVE")) {
+                    matchesStatus = true;
+                } else if (rawStatus === statusTerm) {
+                    matchesStatus = true;
+                }
+
+                return matchesSearch && matchesStatus;
+            });
+
+            displayProperties(filtered);
+        }
+
+        // 3. Display & Sort Function
+        function displayProperties(properties) {
+            const grid = document.getElementById('listings-grid');
+            grid.innerHTML = ''; 
+
+            if (properties.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; grid-column: 1 / -1; padding:40px; color:#888;">No properties match your filter.</div>`;
+                return;
+            }
+
+            // Updated Priority Logic: For Sale (1), Sold (2), For Lease (3), Leased (4)
+            const priority = {
+                "FOR SALE": 1,
+                "ACTIVE": 1,
+                "SOLD": 2,
+                "FOR LEASE": 3,
+                "LEASED": 4
+            };
+
+            const sortedProperties = [...properties].sort((a, b) => {
+                const statusA = (a.status || '').replace(/_/g, ' ').toUpperCase();
+                const statusB = (b.status || '').replace(/_/g, ' ').toUpperCase();
+                
+                const weightA = priority[statusA] || 5; 
+                const weightB = priority[statusB] || 5;
+                
+                return weightA - weightB; 
+            });
+
+            sortedProperties.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const addr = item.address?.unparsed_address || item.display_address || "Listing";
+                const safeAddr = addr.replace(/'/g, "\\'"); 
+                const rawStatus = (item.status || 'Active').replace(/_/g, ' ').toUpperCase();
+                const isAvailable = (rawStatus === "FOR SALE" || rawStatus === "FOR LEASE" || rawStatus === "ACTIVE");
+
+                card.innerHTML = `
+                    <img src="${item.thumbnail_url || item.main_image_url}" alt="Property Thumbnail">
+                    <div class="card-body">
+                        <div>
+                            <span class="status-tag">${rawStatus}</span>
+                            <h3 class="address">${addr}</h3>
+                        </div>
+                        ${isAvailable ? `<button class="booking-btn" onclick="event.stopPropagation(); openBookingOnly('${safeAddr}', '${item.id}')">Book a Showing</button>` : ''}
+                    </div>
+                `;
+                
+                card.onclick = () => openTour(addr, item.id);
+                grid.appendChild(card);
+            });
+        }
+
+        // --- 4. MODAL CONTROLS ---
+
+        function openTour(address, id) {
+            document.getElementById('modal-title').innerText = "Virtual Tour: " + address.toUpperCase();
+            document.getElementById('tour-frame').src = `https://listings.homesinmotion.ca/v2/${id}`;
+            
+            document.getElementById('tour-section').style.display = 'block';
+            document.getElementById('booking-section').style.display = 'none';
+            
+            document.getElementById('modal-box').classList.add('fullscreen');
+            
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function openBookingOnly(address, id) {
+            document.getElementById('modal-title').innerText = "Request Showing: " + address.toUpperCase();
+            
+            document.getElementById('property-address').value = address;
+            document.getElementById('listing-id').value = id;
+            
+            document.getElementById('tour-section').style.display = 'none';
+            document.getElementById('booking-section').style.display = 'block';
+            
+            document.getElementById('modal-box').classList.remove('fullscreen');
+            
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('tour-frame').src = ""; 
+            document.getElementById('booking-form').reset();
+            document.getElementById('submit-btn-text').innerText = "Request Showing";
+        }
+
+        // --- 5. MAKE.COM WEBHOOK SUBMISSION ---
+        async function submitLead(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submit-btn-text');
+            btn.innerText = "Sending...";
+            
+            const payload = {
+                name: document.getElementById('client-name').value,
+                phone: document.getElementById('client-phone').value,
+                email: document.getElementById('client-email').value,
+                property: document.getElementById('property-address').value,
+                listing_id: document.getElementById('listing-id').value
+            };
+
+            try {
+                await fetch(LEAD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                btn.innerText = "Request Sent Successfully!";
+                btn.style.backgroundColor = "#48bb78"; 
+                btn.style.color = "white";
+                
+                setTimeout(() => {
+                    closeModal();
+                    btn.style.backgroundColor = "var(--navy-lt)"; 
+                    btn.style.color = "var(--gold-lt)";
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error sending lead:', error);
+                btn.innerText = "Error. Please try again.";
+            }
+        }
+
+        // Initialize page
+        window.onload = () => {
+            loadPortal();
+        };
+    </script>
 </body>
 </html>
